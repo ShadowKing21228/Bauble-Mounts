@@ -172,8 +172,8 @@ dependencies {
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-    implementation fg.deobf("curse.maven:curios-309927:4985315")
-    implementation fg.deobf("curse.maven:architectury-api-419699:5137931")
+    implementation fg.deobf("curse.maven:curios-309927:4419403")
+    implementation fg.deobf("curse.maven:architectury-api-419699:4521290")
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
