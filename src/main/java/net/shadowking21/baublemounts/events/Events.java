@@ -26,7 +26,7 @@ public class Events {
     public void onMountDead(LivingDeathEvent event)
     {
         if (event.getEntity().getLevel().isClientSide) return;
-        LivingEntity entity = event.getEntity();
+        LivingEntity entity = event.getEntityLiving();
         for (ServerPlayer player : entity.getServer().getPlayerList().getPlayers()) {
             if (Utils.isMountBaubleEqualOnPlayer(player, entity))
             {
