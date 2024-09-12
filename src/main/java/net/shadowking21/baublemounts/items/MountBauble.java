@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -20,7 +21,8 @@ public class MountBauble {
     public static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(ForgeRegistries.ITEMS, BaubleMounts.MODID);
 
-    public static final RegistryObject<Item> BAUBLECOMMON = ITEMS.register("mount_bauble", () -> new Item(new Item.Properties().stacksTo(1)){
+    public static final RegistryObject<Item> BAUBLECOMMON = ITEMS.register("mount_bauble", () ->
+            new Item(new Item.Properties().tab(CreativeModeTab.TAB_TOOLS).stacksTo(1)){
         @Override
         public boolean isFoil(ItemStack itemStack) {
             return itemStack.getTag() != null && itemStack.getTag().contains("Mount") && !itemStack.getTag().getCompound("Mount").isEmpty();
@@ -30,6 +32,7 @@ public class MountBauble {
     {
         ITEMS.register(eventBus);
     }
+
     public static void spawnMount(ServerPlayer player, ItemStack baubleMount, BlockPos blockPos)
     {
         if (baubleMount.getItem() == MountBauble.BAUBLECOMMON.get());
@@ -39,9 +42,9 @@ public class MountBauble {
             if (!mountTag.isEmpty())
             {
                 ItemStack itemStack = baubleMount.copy();
-                var var = EntityType.create(mountTag, player.level());
+                var var = EntityType.create(mountTag, player.getLevel());
                 var.get().setPos(blockPos.getX(), blockPos.getY() + 1, blockPos.getZ());
-                player.level().addFreshEntity(var.get());
+                player.getLevel().addFreshEntity(var.get());
                 itemStack.addTagElement("Mount", new CompoundTag());
                 if (player.isCreative())
                 {
@@ -58,7 +61,7 @@ public class MountBauble {
     {
         if (player.isPassenger()) {
             CompoundTag mountTag = baubleMount.getOrCreateTag().getCompound("Mount");
-            var var = EntityType.create(mountTag, player.level());
+            var var = EntityType.create(mountTag, player.getLevel());
             Entity entity = player.getVehicle();
             if (Objects.equals(baubleMount.getTag().getCompound("ID").getUUID("ID"), entity.getUUID())) {
                 player.stopRiding();
@@ -67,10 +70,10 @@ public class MountBauble {
         else if (!player.getCooldowns().isOnCooldown(baubleMount.getItem()))
          {
              CompoundTag mountTag = baubleMount.getOrCreateTag().getCompound("Mount");
-             var var = EntityType.create(mountTag, player.level());
+             var var = EntityType.create(mountTag, player.getLevel());
             BlockPos blockPos = player.getOnPos();
             var.get().setPos(blockPos.getX(), blockPos.getY() + 1, blockPos.getZ());
-            player.level().addFreshEntity(var.get());
+            player.getLevel().addFreshEntity(var.get());
             player.startRiding(var.get(), true);
              player.getCooldowns().addCooldown(baubleMount.getItem(),100);
         }

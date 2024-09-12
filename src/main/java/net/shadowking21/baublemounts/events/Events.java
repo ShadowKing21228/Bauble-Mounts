@@ -15,7 +15,7 @@ import net.shadowking21.baublemounts.utils.Utils;
 public class Events {
     @SubscribeEvent
     public void onBaubleClick(PlayerInteractEvent.RightClickBlock event) {
-        if (event.getEntity().level().isClientSide) return;
+        if (event.getEntity().getLevel().isClientSide) return;
         if (event.getEntity() instanceof ServerPlayer player)
         {
             MountBauble.spawnMount(player, event.getItemStack(), event.getHitVec().getBlockPos());;
@@ -25,7 +25,7 @@ public class Events {
     @SubscribeEvent
     public void onMountDead(LivingDeathEvent event)
     {
-        if (event.getEntity().level().isClientSide) return;
+        if (event.getEntity().getLevel().isClientSide) return;
         LivingEntity entity = event.getEntity();
         for (ServerPlayer player : entity.getServer().getPlayerList().getPlayers()) {
             if (Utils.isMountBaubleEqualOnPlayer(player, entity))
