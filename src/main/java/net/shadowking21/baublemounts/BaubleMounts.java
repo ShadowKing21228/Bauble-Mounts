@@ -2,12 +2,7 @@ package net.shadowking21.baublemounts;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
@@ -17,26 +12,25 @@ import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.shadowking21.baublemounts.events.Events;
 import net.shadowking21.baublemounts.items.MountBauble;
 import net.shadowking21.baublemounts.items.MountBaubleBroken;
 import net.shadowking21.baublemounts.network.ModNetwork;
 import net.shadowking21.baublemounts.network.SendSpawnEntityC2S;
 import org.lwjgl.glfw.GLFW;
-import top.theillusivec4.curios.api.type.capability.ICurioItem;
-
-import java.util.ArrayList;
-import java.util.List;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(BaubleMounts.MODID)
 public class BaubleMounts {
+
+    public static boolean isIceAndFireLoaded(){
+        return ModList.get().isLoaded("iceandfire");
+    }
 
     public static final String MODID = "baublemounts";
     public BaubleMounts() {
@@ -52,6 +46,10 @@ public class BaubleMounts {
         {
             new ClientModEvents().init();
         }
+
+
+
+
     }
     private void addCreative (BuildCreativeModeTabContentsEvent event ) {
         if(event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
