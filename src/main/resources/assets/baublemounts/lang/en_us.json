@@ -1,0 +1,7 @@
+{
+  "item.baublemounts.mount_bauble" : "Mount Bauble",
+  "item.baublemounts.mount_bauble_broken" : "Broken Mount Bauble",
+  "curios.identifier.mountbauble": "Mount Bauble",
+  "key.baublemounts.mountsummon": "Mount Summon",
+  "key.categories.baublemounts": "Bauble Mounts"
+}

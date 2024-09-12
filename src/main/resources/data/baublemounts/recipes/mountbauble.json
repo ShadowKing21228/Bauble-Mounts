@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " CI",
+    "CGC",
+    " C "
+  ],
+  "key": {
+    "I": {
+      "tag" : "forge:ingots/iron"
+    },
+    "G": {
+      "tag": "forge:gems"
+    },
+    "C": {
+      "tag": "forge:ingots/gold"
+    }
+  },
+  "result": {
+    "item": "baublemounts:mount_bauble"
+  }
+}
