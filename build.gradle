@@ -97,9 +97,6 @@ minecraft {
         client {
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             property 'forge.enabledGameTestNamespaces', mod_id
-            property 'mixin.env.compatLevel', 'JAVA_17'
-            property 'mixin.debug', 'true'
-            property 'mixin.env.remapRefMap', 'true'
         }
 
         server {
@@ -175,8 +172,8 @@ dependencies {
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.4.2+1.20.1:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.4.2+1.20.1")
     implementation fg.deobf("curse.maven:architectury-api-419699:5137938")
-    implementation fg.deobf("curse.maven:citadel-331936:5633260")
-    implementation fg.deobf("curse.maven:ice-and-fire-dragons-264231:5633453")
+    compileOnly fg.deobf("curse.maven:citadel-331936:5633260")
+    compileOnly fg.deobf("curse.maven:ice-and-fire-dragons-264231:5633453")
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 

@@ -1,6 +1,7 @@
 package net.shadowking21.baublemounts;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.logging.LogUtils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.api.distmarker.Dist;
@@ -23,6 +24,7 @@ import net.shadowking21.baublemounts.items.MountBaubleBroken;
 import net.shadowking21.baublemounts.network.ModNetwork;
 import net.shadowking21.baublemounts.network.SendSpawnEntityC2S;
 import org.lwjgl.glfw.GLFW;
+import org.slf4j.Logger;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(BaubleMounts.MODID)
@@ -33,6 +35,7 @@ public class BaubleMounts {
     }
 
     public static final String MODID = "baublemounts";
+    public static final Logger LOGGER = LogUtils.getLogger();
     public BaubleMounts() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         MountBauble.register(modEventBus);

@@ -7,8 +7,7 @@
   "mixins": [
     "EntityMixin",
     "StartRidingMixin",
-    "StopRidingMixin",
-    "iceandfire.EntityDragonBaseMixin"
+    "StopRidingMixin"
   ],
   "client": [
   ],
