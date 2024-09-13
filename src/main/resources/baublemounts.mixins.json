@@ -5,7 +5,6 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "baublemounts.refmap.json",
   "mixins": [
-    "EntityMixin",
     "StartRidingMixin",
     "StopRidingMixin"
   ],
