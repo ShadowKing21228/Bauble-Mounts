@@ -172,8 +172,10 @@ dependencies {
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-    implementation fg.deobf("curse.maven:curios-309927:4419403")
-    implementation fg.deobf("curse.maven:architectury-api-419699:4521290")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.4.2+1.20.1:api")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.4.2+1.20.1")
+    implementation fg.deobf("curse.maven:architectury-api-419699:5137938")
+    implementation fg.deobf("curse.maven:sdm-ui-lib-1095061:5698274")
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 

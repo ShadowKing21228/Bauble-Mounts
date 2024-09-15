@@ -61,3 +61,24 @@ description='''${mod_description}'''
    versionRange="${minecraft_version_range}"
    ordering="NONE"
    side="BOTH"
+[[dependencies."${mod_id}"]]
+modId="sdm_ui_library"
+mandatory=true
+# This version range declares a minimum of the current minecraft version up to but not including the next major version
+versionRange="[1.20.1-1.6.0, )"
+ordering="NONE"
+side="BOTH"
+[[dependencies."${mod_id}"]]
+modId="architectury"
+mandatory=true
+# This version range declares a minimum of the current minecraft version up to but not including the next major version
+versionRange="[9.2.14, )"
+ordering="NONE"
+side="BOTH"
+[[dependencies."${mod_id}"]]
+modId="curios"
+mandatory=true
+# This version range declares a minimum of the current minecraft version up to but not including the next major version
+versionRange="[5.4.2+1.20.1, )"
+ordering="NONE"
+side="BOTH"

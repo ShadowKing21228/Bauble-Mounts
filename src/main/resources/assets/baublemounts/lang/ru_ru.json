@@ -3,5 +3,7 @@
   "item.baublemounts.mount_bauble_broken" : "Сломанная ездовая безделушка",
   "curios.identifier.mountbauble": "Ездовая безделушка",
   "key.baublemounts.mountsummon": "Призыв ездового животного",
-  "key.categories.baublemounts": "Езделушка"
+  "key.categories.baublemounts": "Езделушка",
+  "tooltip.bauble_mounts.getname" : "Имя ездового животного:",
+  "tooltip.bauble_mounts.gethealth" : "Здоровье ездового животного:"
 }

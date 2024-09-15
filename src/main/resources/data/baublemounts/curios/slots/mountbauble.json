@@ -1,4 +1,5 @@
 {
   "operation": "SET",
+  "icon": "baublemounts:slot/empty_mount_bauble_slot",
   "size": 1
 }
