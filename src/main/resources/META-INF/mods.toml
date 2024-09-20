@@ -62,7 +62,7 @@ description='''${mod_description}'''
    ordering="NONE"
    side="BOTH"
 [[dependencies."${mod_id}"]]
-modId="sdm_ui_library"
+modId="sdm_ui_lib"
 mandatory=true
 # This version range declares a minimum of the current minecraft version up to but not including the next major version
 versionRange="[1.20.1-1.6.0, )"

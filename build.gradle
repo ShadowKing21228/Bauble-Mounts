@@ -175,7 +175,7 @@ dependencies {
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.4.2+1.20.1:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.4.2+1.20.1")
     implementation fg.deobf("curse.maven:architectury-api-419699:5137938")
-    implementation fg.deobf("curse.maven:sdm-ui-lib-1095061:5698274")
+    implementation fg.deobf("curse.maven:sdm-ui-lib-1095061:5736797")
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 

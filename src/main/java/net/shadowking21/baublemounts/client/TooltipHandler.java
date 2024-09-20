@@ -12,12 +12,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
-import net.sixik.sdmuilibrary.client.utils.GLHelper;
-import net.sixik.sdmuilibrary.client.utils.RenderHelper;
-import net.sixik.sdmuilibrary.client.utils.math.Vector2;
-import net.sixik.sdmuilibrary.client.utils.math.Vector2d;
-import net.sixik.sdmuilibrary.client.utils.misc.CenterOperators;
-import net.sixik.sdmuilibrary.client.utils.renders.TextureRenderHelper;
+import net.sixik.sdmuilib.client.utils.GLHelper;
+import net.sixik.sdmuilib.client.utils.RenderHelper;
+import net.sixik.sdmuilib.client.utils.math.Vector2;
+import net.sixik.sdmuilib.client.utils.math.Vector2d;
+import net.sixik.sdmuilib.client.utils.misc.CenterOperators;
+import net.sixik.sdmuilib.client.utils.renders.TextureRenderHelper;
 
 import java.util.List;
 import java.util.Vector;
