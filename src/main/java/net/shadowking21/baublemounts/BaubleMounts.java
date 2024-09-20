@@ -117,12 +117,17 @@ public class BaubleMounts {
         if (itemStack.getItem() == MountBauble.BAUBLECOMMON.get() || itemStack.getItem() == MountBaubleBroken.BAUBLEBROKEN.get())
         {
             Entity entity = null;
-            if (itemStack.getOrCreateTag().contains("Mount"))
+            if (itemStack.hasTag() && itemStack.getTag().contains("Mount") && !itemStack.getTag().getCompound("Mount").isEmpty())
             {
-                CompoundTag compoundTag = itemStack.getOrCreateTag().getCompound("Mount");
-                entity = EntityType.create(compoundTag, Minecraft.getInstance().player.level()).get();
-                if (ForgeRegistries.ENTITY_TYPES.getKey(entity.getType()).getNamespace().equals("iceandfire") || ForgeRegistries.ENTITY_TYPES.getKey(entity.getType()).getNamespace().equals("dragonmounts")) entity = null;
+                CompoundTag compoundTag = itemStack.getTag().getCompound("Mount");
+                Optional<Entity> d1 = EntityType.create(compoundTag, Minecraft.getInstance().player.level());
+                if(d1.isPresent()) {
+                    entity = d1.get();
+                    if (ForgeRegistries.ENTITY_TYPES.getKey(entity.getType()).getNamespace().equals("iceandfire") || ForgeRegistries.ENTITY_TYPES.getKey(entity.getType()).getNamespace().equals("dragonmounts"))
+                        entity = null;
+                }
             }
+
             TooltipHandler.BaubleMountsTooltipComponent tooltipComponent = new TooltipHandler.BaubleMountsTooltipComponent(itemStack, entity);
             GuiGraphics guiGraphics = event.getGraphics();
 

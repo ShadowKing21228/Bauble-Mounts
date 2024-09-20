@@ -4,6 +4,6 @@
   "curios.identifier.mountbauble": "Ездовая безделушка",
   "key.baublemounts.mountsummon": "Призыв ездового животного",
   "key.categories.baublemounts": "Езделушка",
-  "tooltip.bauble_mounts.getname" : "Имя ездового животного:",
-  "tooltip.bauble_mounts.gethealth" : "Здоровье ездового животного:"
+  "tooltip.bauble_mounts.getname" : "Имя ездового животного: %s",
+  "tooltip.bauble_mounts.gethealth" : "Здоровье ездового животного: %s"
 }

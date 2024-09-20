@@ -1,6 +1,7 @@
 package net.shadowking21.baublemounts.items;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -36,21 +37,18 @@ public class MountBauble {
         {
             player.stopRiding();
             CompoundTag mountTag = baubleMount.getOrCreateTag().getCompound("Mount");
-            if (!mountTag.isEmpty())
-            {
+            if (!mountTag.isEmpty() && !BuiltInRegistries.ITEM.getKey(baubleMount.getItem()).toString().contains("mount_bauble_broken")) {
                 ItemStack itemStack = baubleMount.copy();
                 var var = EntityType.create(mountTag, player.level());
                 var.get().setPos(blockPos.getX(), blockPos.getY() + 1, blockPos.getZ());
                 player.level().addFreshEntity(var.get());
                 itemStack.addTagElement("Mount", new CompoundTag());
-                if (player.isCreative())
-                {
+                if (player.isCreative()) {
                     player.setItemInHand(InteractionHand.MAIN_HAND, itemStack);
-                }
-                else
-                {
+                } else {
                     player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
                 }
+
             }
         }
     }

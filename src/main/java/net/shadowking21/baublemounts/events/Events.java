@@ -18,6 +18,7 @@ import net.shadowking21.baublemounts.items.MountBaubleBroken;
 import net.shadowking21.baublemounts.utils.Utils;
 
 import java.awt.*;
+import java.util.Optional;
 
 public class Events {
     @SubscribeEvent
@@ -66,16 +67,19 @@ public class Events {
     public void onItemTooltip(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
 
-        if (stack.getOrCreateTag().contains("Mount")) {
-            CompoundTag compoundTag = stack.getOrCreateTag().getCompound("Mount");
-            Entity entity = EntityType.create(compoundTag, event.getEntity().level()).get();
-            LivingEntity entity1 = (LivingEntity) entity;
-            Component component;
-            event.getToolTip().add(Component.translatable("tooltip.bauble_mounts.getname"));
-            event.getToolTip().add(entity.getDisplayName());
-            component = Component.literal( entity1.getHealth() + " / " + entity1.getMaxHealth());
-            event.getToolTip().add(Component.translatable("tooltip.bauble_mounts.gethealth"));
-            event.getToolTip().add(component);
+        if (stack.hasTag() && stack.getTag().contains("Mount") && !stack.getTag().getCompound("Mount").isEmpty()) {
+            CompoundTag compoundTag = stack.getTag().getCompound("Mount");
+            Optional<Entity> d1 = EntityType.create(compoundTag, event.getEntity().level());
+            if(d1.isPresent()) {
+                Entity entity = d1.get();
+                LivingEntity entity1 = (LivingEntity) entity;
+                String d = entity.getDisplayName().getString();
+                if (d.contains("[")) d = d.replace("[", " ");
+                if (d.contains("]")) d = d.replace("]", " ");
+
+                event.getToolTip().add(Component.translatable("tooltip.bauble_mounts.getname", d));
+                event.getToolTip().add(Component.translatable("tooltip.bauble_mounts.gethealth", (entity1.getHealth() + " / " + entity1.getMaxHealth())));
+            }
         }
     }
 

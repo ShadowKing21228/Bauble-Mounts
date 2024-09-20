@@ -4,6 +4,6 @@
   "curios.identifier.mountbauble": "Mount Bauble",
   "key.baublemounts.mountsummon": "Mount Summon",
   "key.categories.baublemounts": "Bauble Mounts",
-  "tooltip.bauble_mounts.getname" : "Mount Name:",
-  "tooltip.bauble_mounts.gethealth" : "Mount Health:"
+  "tooltip.bauble_mounts.getname" : "Mount Name: %s",
+  "tooltip.bauble_mounts.gethealth" : "Mount Health: %s"
 }

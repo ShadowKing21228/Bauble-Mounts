@@ -44,6 +44,7 @@ public class TooltipHandler {
             return 0;
         }
         public int tick = 90;
+
         public Vector2 calculateSize(List<ClientTooltipComponent> list)
         {
             int x= 0;
@@ -54,10 +55,12 @@ public class TooltipHandler {
             }
             return new Vector2(x, y);
         }
+
         public static Vector2d getEntitySize(LivingEntity livingEntity, double scale) {
             AABB d = livingEntity.getBoundingBox();
             return new Vector2d(d.maxX * scale, d.minY * scale);
         }
+
         @Override
         public void renderImage(Font font, int x, int y, GuiGraphics guiGraphics) {
             Vector2 screenSize = new Vector2(Minecraft.getInstance().getWindow().getGuiScaledWidth(), Minecraft.getInstance().getWindow().getGuiScaledHeight());
@@ -68,7 +71,7 @@ public class TooltipHandler {
             if (component.entity != null)
             {
                 vector2d = getEntitySize((LivingEntity) component.entity, 0.85);
-                tooltipSize.setY((int) (vector2.y+(8*var.size()) + vector2d.y));
+                tooltipSize.setY((int) (vector2.y+(8*var.size()) + vector2d.y) + (65 + 40));
             }
             else tooltipSize.setY(vector2.y+(8*var.size()));
             if (vector2d.x > vector2.x+16)
