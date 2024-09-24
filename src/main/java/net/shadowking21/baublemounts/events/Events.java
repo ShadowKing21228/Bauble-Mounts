@@ -1,6 +1,5 @@
 package net.shadowking21.baublemounts.events;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -8,16 +7,13 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.shadowking21.baublemounts.items.MountBauble;
-import net.shadowking21.baublemounts.items.MountBaubleBroken;
 import net.shadowking21.baublemounts.utils.Utils;
-
-import java.awt.*;
 
 public class Events {
     @SubscribeEvent
@@ -37,11 +33,12 @@ public class Events {
         for (ServerPlayer player : entity.getServer().getPlayerList().getPlayers()) {
             if (Utils.isMountBaubleEqualOnPlayer(player, entity))
             {
-                ItemStack itemStack = new ItemStack(MountBaubleBroken.BAUBLEBROKEN.get());
+                ItemStack itemStack = new ItemStack(MountBauble.BAUBLEBROKEN.get());
                 ItemStack itemStack1 = Utils.getMountBauble(player);
                 CompoundTag compoundTag = new CompoundTag();
-                compoundTag.merge(itemStack1.getOrCreateTag());
-                itemStack.getOrCreateTag().merge(compoundTag);
+                compoundTag.merge(Utils.getMountCompoundTag(itemStack1));
+                CompoundTag itemstackTag = Utils.getMountCompoundTag(itemStack).merge(compoundTag);
+                Utils.writeCompound(itemStack, itemstackTag);
                 Utils.updateMountBauble(player, itemStack);
             }
         }
@@ -54,10 +51,11 @@ public class Events {
         for (int i = 0; i < event.getInventory().getContainerSize(); i++) {
             ItemStack ingredient = event.getInventory().getItem(i);
 
-            if (ingredient.getItem() == MountBaubleBroken.BAUBLEBROKEN.get()) {
+            if (ingredient.getItem() == MountBauble.BAUBLEBROKEN.get()) {
                 CompoundTag compoundTag = new CompoundTag();
-                compoundTag.merge(ingredient.getOrCreateTag());
-                result.getOrCreateTag().merge(compoundTag);
+                compoundTag.merge(Utils.getMountCompoundTag(ingredient));
+                CompoundTag resultTag = Utils.getMountCompoundTag(result).merge(compoundTag);
+                Utils.writeCompound(result, resultTag);
                 break;
             }
         }
@@ -66,8 +64,8 @@ public class Events {
     public void onItemTooltip(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
 
-        if (stack.getOrCreateTag().contains("Mount")) {
-            CompoundTag compoundTag = stack.getOrCreateTag().getCompound("Mount");
+        if (Utils.getMountCompoundTag(stack).contains("Mount")) {
+            CompoundTag compoundTag = Utils.getMountCompoundTag(stack).getCompound("Mount");
             Entity entity = EntityType.create(compoundTag, event.getEntity().level()).get();
             LivingEntity entity1 = (LivingEntity) entity;
             Component component;

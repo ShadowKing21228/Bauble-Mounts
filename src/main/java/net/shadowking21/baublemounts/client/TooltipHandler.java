@@ -8,10 +8,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
+import net.neoforged.neoforge.client.ClientHooks;
+import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.sixik.sdmuilibrary.client.utils.GLHelper;
 import net.sixik.sdmuilibrary.client.utils.RenderHelper;
 import net.sixik.sdmuilibrary.client.utils.math.Vector2;
@@ -20,7 +22,6 @@ import net.sixik.sdmuilibrary.client.utils.misc.CenterOperators;
 import net.sixik.sdmuilibrary.client.utils.renders.TextureRenderHelper;
 
 import java.util.List;
-import java.util.Vector;
 
 public class TooltipHandler {
     public static void register(RegisterClientTooltipComponentFactoriesEvent event)
@@ -61,7 +62,7 @@ public class TooltipHandler {
         @Override
         public void renderImage(Font font, int x, int y, GuiGraphics guiGraphics) {
             Vector2 screenSize = new Vector2(Minecraft.getInstance().getWindow().getGuiScaledWidth(), Minecraft.getInstance().getWindow().getGuiScaledHeight());
-            List<ClientTooltipComponent> var = net.minecraftforge.client.ForgeHooksClient.gatherTooltipComponents(component.itemStack, component.itemStack.getTooltipLines(Minecraft.getInstance().player, TooltipFlag.NORMAL), x, screenSize.x, screenSize.y, font);
+            List<ClientTooltipComponent> var = ClientHooks.gatherTooltipComponents(component.itemStack, component.itemStack.getTooltipLines(Item.TooltipContext.EMPTY, Minecraft.getInstance().player, TooltipFlag.NORMAL), x, screenSize.x, screenSize.y, font);
             Vector2 vector2 = calculateSize(var);
             Vector2d vector2d = new Vector2d(0, 0);
             Vector2 tooltipSize = new Vector2(0 , 0);
@@ -78,7 +79,7 @@ public class TooltipHandler {
             Vector2 entityPos = GLHelper.getCenterWithPos(new Vector2(x, 0), tooltipSize, CenterOperators.Type.CENTER_X, CenterOperators.Method.ABSOLUTE);
             guiGraphics.pose().pushPose();
             guiGraphics.pose().translate(0, 0, 900);
-            TextureRenderHelper.renderSlicedTexture(guiGraphics, new ResourceLocation("baublemounts:textures/tooltip/button.png"), x, y, tooltipSize.x, tooltipSize.y, 10, 64, 64);
+            TextureRenderHelper.renderSlicedTexture(guiGraphics, ResourceLocation.parse("baublemounts:textures/tooltip/button.png"), x, y, tooltipSize.x, tooltipSize.y, 10, 64, 64);
 
             int l = x+8;
             int i1 = y+8;
@@ -103,7 +104,7 @@ public class TooltipHandler {
             tick++;
         }
     }
-    public static class BaubleMountsTooltipComponent implements net.minecraft.world.inventory.tooltip.TooltipComponent
+    public static class BaubleMountsTooltipComponent implements TooltipComponent
     {
         public ItemStack itemStack;
         public Entity entity;

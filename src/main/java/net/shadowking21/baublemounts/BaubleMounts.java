@@ -1,83 +1,87 @@
 package net.shadowking21.baublemounts;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.logging.LogUtils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.client.event.RenderTooltipEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.event.RenderTooltipEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.shadowking21.baublemounts.client.TooltipHandler;
+import net.shadowking21.baublemounts.components.MountComponents;
+import net.shadowking21.baublemounts.components.MountRecord;
 import net.shadowking21.baublemounts.events.Events;
 import net.shadowking21.baublemounts.items.MountBauble;
-import net.shadowking21.baublemounts.items.MountBaubleBroken;
-import net.shadowking21.baublemounts.network.ModNetwork;
 import net.shadowking21.baublemounts.network.SendSpawnEntityC2S;
+import net.shadowking21.baublemounts.utils.Utils;
 import org.joml.Vector2ic;
 import org.lwjgl.glfw.GLFW;
-import top.theillusivec4.curios.api.type.capability.ICurioItem;
+import org.slf4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-// The value here should match an entry in the META-INF/mods.toml file
+// The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(BaubleMounts.MODID)
 public class BaubleMounts {
-
     public static final String MODID = "baublemounts";
-    public BaubleMounts() {
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+    private static final Logger LOGGER = LogUtils.getLogger();
+    public static IEventBus ModEventBus;
+    public BaubleMounts(IEventBus modEventBus, ModContainer modContainer) {
+        modEventBus.addListener(this::commonSetup);
+        NeoForge.EVENT_BUS.register(this);
+        modEventBus.addListener(this::addCreative);
         modEventBus.addListener(this::onRegisterTooltip);
         MountBauble.register(modEventBus);
-        MountBaubleBroken.register(modEventBus);
-        modEventBus.addListener(this::commonSetup);
-        MinecraftForge.EVENT_BUS.register(this);
-        modEventBus.addListener(this::addCreative);
-        MinecraftForge.EVENT_BUS.register(new Events());
-        ModNetwork.init();
-        if (FMLEnvironment.dist.isClient())
-        {
+        NeoForge.EVENT_BUS.register(this);
+        NeoForge.EVENT_BUS.register(new Events());
+        if (FMLEnvironment.dist.isClient()) {
             new ClientModEvents().init();
         }
+        MountComponents.REGISTRAR.register(modEventBus);
     }
-    private void addCreative (BuildCreativeModeTabContentsEvent event ) {
+
+    private void commonSetup(final FMLCommonSetupEvent event) {
+
+    }
+
+    private void addCreative(BuildCreativeModeTabContentsEvent event) {
         if(event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             event.accept(MountBauble.BAUBLECOMMON);
-            event.accept(MountBaubleBroken.BAUBLEBROKEN);
+            event.accept(MountBauble.BAUBLEBROKEN);
         }
     }
-    private void commonSetup(final FMLCommonSetupEvent event) {
+
+    @SubscribeEvent
+    public void onServerStarting(ServerStartingEvent event) {
+
+        LOGGER.info("HELLO from server starting");
     }
-    @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+
+    // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
+    @EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents {
         public void init() {
-            IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-            MinecraftForge.EVENT_BUS.addListener(this::keyMountSummon);
+            NeoForge.EVENT_BUS.addListener(this::keyMountSummon);
         }
         public static final KeyMapping MOUNT_SUMMON_KEY = new KeyMapping(
                 "key.baublemounts.mountsummon",
@@ -97,14 +101,11 @@ public class BaubleMounts {
         {
             if (MOUNT_SUMMON_KEY.consumeClick())
             {
-                new SendSpawnEntityC2S().sendToServer();
+                PacketDistributor.sendToServer(new SendSpawnEntityC2S.MyData(true));
             }
         }
     }
-    @SubscribeEvent
-    public void onServerStarting(ServerStartingEvent event) {
 
-    }
     public void onRegisterTooltip (RegisterClientTooltipComponentFactoriesEvent event)
     {
         TooltipHandler.register(event);
@@ -114,14 +115,14 @@ public class BaubleMounts {
     public void onRenderTooltip (RenderTooltipEvent.Pre event)
     {
         ItemStack itemStack = event.getItemStack();
-        if (itemStack.getItem() == MountBauble.BAUBLECOMMON.get() || itemStack.getItem() == MountBaubleBroken.BAUBLEBROKEN.get())
+        if (itemStack.getItem() == MountBauble.BAUBLECOMMON.get() || itemStack.getItem() == MountBauble.BAUBLEBROKEN.get())
         {
             Entity entity = null;
-            if (itemStack.getOrCreateTag().contains("Mount"))
+            if (Utils.getMountCompoundTag(itemStack).contains("Mount"))
             {
-                CompoundTag compoundTag = itemStack.getOrCreateTag().getCompound("Mount");
+                CompoundTag compoundTag = Utils.getMountCompoundTag(itemStack).getCompound("Mount");
                 entity = EntityType.create(compoundTag, Minecraft.getInstance().player.level()).get();
-                if (ForgeRegistries.ENTITY_TYPES.getKey(entity.getType()).getNamespace().equals("iceandfire") || ForgeRegistries.ENTITY_TYPES.getKey(entity.getType()).getNamespace().equals("dragonmounts")) entity = null;
+                if (BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).getNamespace().equals("iceandfire") || BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).getNamespace().equals("dragonmounts")) entity = null;
             }
             TooltipHandler.BaubleMountsTooltipComponent tooltipComponent = new TooltipHandler.BaubleMountsTooltipComponent(itemStack, entity);
             GuiGraphics guiGraphics = event.getGraphics();
