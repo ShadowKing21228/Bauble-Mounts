@@ -37,6 +37,7 @@ import net.shadowking21.baublemounts.items.MountBauble;
 import net.shadowking21.baublemounts.items.MountBaubleBroken;
 import net.shadowking21.baublemounts.network.ModNetwork;
 import net.shadowking21.baublemounts.network.SendSpawnEntityC2S;
+import net.shadowking21.baublemounts.sounds.MountSound;
 import org.joml.Vector2ic;
 import org.lwjgl.glfw.GLFW;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
@@ -60,6 +61,7 @@ public class BaubleMounts {
         modEventBus.addListener(this::addCreative);
         MinecraftForge.EVENT_BUS.register(new Events());
         ModNetwork.init();
+        MountSound.register(modEventBus);
         if (FMLEnvironment.dist.isClient())
         {
             new ClientModEvents().init();

@@ -1,0 +1,21 @@
+{
+  "mount_summon": {
+    "subtitles": "sounds.baublemounts.mount_summon",
+    "sounds": [
+      {
+        "name": "baublemounts:mount_summon",
+        "stream" : false
+      }
+    ]
+  },
+  "mount_unsummon":
+  {
+    "subtitles": "sounds.baublemounts.mount_unsummon",
+    "sounds": [
+      {
+        "name" : "baublemounts:mount_unsummon",
+        "stream" : false
+      }
+    ]
+  }
+}

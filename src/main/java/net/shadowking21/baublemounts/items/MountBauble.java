@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -14,6 +15,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.shadowking21.baublemounts.BaubleMounts;
+import net.shadowking21.baublemounts.sounds.MountSound;
 
 import java.util.Objects;
 
@@ -60,6 +62,7 @@ public class MountBauble {
             Entity entity = player.getVehicle();
             if (Objects.equals(baubleMount.getTag().getCompound("ID").getUUID("ID"), entity.getUUID())) {
                 player.stopRiding();
+                player.level().playSound(entity, var.get().getOnPos(), MountSound.MOUNT_UNSUMMON.get(), SoundSource.NEUTRAL, 1f, 1f);
             }
         }
         else if (!player.getCooldowns().isOnCooldown(baubleMount.getItem()))
@@ -70,7 +73,8 @@ public class MountBauble {
             var.get().setPos(blockPos.getX(), blockPos.getY() + 1, blockPos.getZ());
             player.level().addFreshEntity(var.get());
             player.startRiding(var.get(), true);
-             player.getCooldowns().addCooldown(baubleMount.getItem(),100);
-        }
+            player.getCooldowns().addCooldown(baubleMount.getItem(),100);
+            player.level().playSound(var.get(), var.get().getOnPos(), MountSound.MOUNT_SUMMON.get(), SoundSource.NEUTRAL, 1f, 1f);
+         }
     }
 }

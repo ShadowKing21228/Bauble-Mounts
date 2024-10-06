@@ -5,5 +5,7 @@
   "key.baublemounts.mountsummon": "Призыв ездового животного",
   "key.categories.baublemounts": "Езделушка",
   "tooltip.bauble_mounts.getname" : "Имя ездового животного: %s",
-  "tooltip.bauble_mounts.gethealth" : "Здоровье ездового животного: %s"
+  "tooltip.bauble_mounts.gethealth" : "Здоровье ездового животного: %s",
+  "sounds.baublemounts.mount_summon": "Призыв ездового животного",
+  "sounds.baublemounts.mount_unsummon": "Исчезновение ездового животного"
 }
