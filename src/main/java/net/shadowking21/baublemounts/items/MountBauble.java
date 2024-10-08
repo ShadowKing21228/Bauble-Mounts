@@ -2,10 +2,15 @@ package net.shadowking21.baublemounts.items;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundCustomSoundPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -14,6 +19,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.shadowking21.baublemounts.BaubleMounts;
+import net.shadowking21.baublemounts.sounds.MountSound;
 
 import java.util.Objects;
 
@@ -65,6 +71,8 @@ public class MountBauble {
             Entity entity = player.getVehicle();
             if (Objects.equals(baubleMount.getTag().getCompound("ID").getUUID("ID"), entity.getUUID())) {
                 player.stopRiding();
+                ResourceLocation d1 = new ResourceLocation(BaubleMounts.MODID, "mount_unsummon");
+                player.connection.send(new ClientboundCustomSoundPacket(d1, SoundSource.NEUTRAL, player.position(), 1,1,player.level.random.nextLong()));
             }
         }
         else if (!player.getCooldowns().isOnCooldown(baubleMount.getItem()))
@@ -76,6 +84,9 @@ public class MountBauble {
             player.getLevel().addFreshEntity(var.get());
             player.startRiding(var.get(), true);
              player.getCooldowns().addCooldown(baubleMount.getItem(),100);
-        }
+
+             ResourceLocation d1 = new ResourceLocation(BaubleMounts.MODID, "mount_summon");
+             player.connection.send(new ClientboundCustomSoundPacket(d1, SoundSource.NEUTRAL, player.position(), 1,1,player.level.random.nextLong()));
+         }
     }
 }

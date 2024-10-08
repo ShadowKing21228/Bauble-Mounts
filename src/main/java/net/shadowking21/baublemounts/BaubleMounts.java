@@ -22,6 +22,7 @@ import net.shadowking21.baublemounts.items.MountBauble;
 import net.shadowking21.baublemounts.items.MountBaubleBroken;
 import net.shadowking21.baublemounts.network.ModNetwork;
 import net.shadowking21.baublemounts.network.SendSpawnEntityC2S;
+import net.shadowking21.baublemounts.sounds.MountSound;
 import org.lwjgl.glfw.GLFW;
 import top.theillusivec4.curios.api.SlotTypeMessage;
 import top.theillusivec4.curios.api.SlotTypePreset;
@@ -40,6 +41,7 @@ public class BaubleMounts {
 
         MinecraftForge.EVENT_BUS.register(new Events());
         ModNetwork.init();
+        MountSound.register(modEventBus);
         if (FMLEnvironment.dist.isClient())
         {
             new ClientModEvents().init();
@@ -89,7 +91,7 @@ public class BaubleMounts {
 
     public void sendImc(InterModEnqueueEvent evt) {
         InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () ->
-                (new SlotTypeMessage.Builder("mountbauble")).priority(10).icon(new ResourceLocation("curios", "slot/empty_curio_slot")
+                (new SlotTypeMessage.Builder("mountbauble")).priority(10).icon(new ResourceLocation("curios", "slot/empty_mount_bauble_slot")
         ).build());
     }
 }
