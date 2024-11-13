@@ -9,24 +9,19 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.LazyOptional;
 import net.shadowking21.baublemounts.BaubleMounts;
-import net.shadowking21.baublemounts.items.MountBauble;
 import net.shadowking21.baublemounts.utils.Utils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 
 import java.util.UUID;
 
 @Mixin(LivingEntity.class)
 public class StopRidingMixin {
     public LivingEntity player = (LivingEntity)(Object)this;
-    @Inject(method = "Lnet/minecraft/world/entity/LivingEntity;dismountVehicle(Lnet/minecraft/world/entity/Entity;)V", at = @At(value = "HEAD"), cancellable = true)
+    @Inject(method = "dismountVehicle(Lnet/minecraft/world/entity/Entity;)V", at = @At(value = "HEAD"))
     private void onStopRiding(Entity entity, CallbackInfo ci)
     {
         if (player instanceof ServerPlayer player) {

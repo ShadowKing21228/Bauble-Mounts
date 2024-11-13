@@ -12,7 +12,9 @@ import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -38,7 +40,7 @@ public class BaubleMounts {
         MountBaubleBroken.register(modEventBus);
         modEventBus.addListener(this::commonSetup);
         MinecraftForge.EVENT_BUS.register(this);
-
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, BMConfig.SPEC);
         MinecraftForge.EVENT_BUS.register(new Events());
         ModNetwork.init();
         MountSound.register(modEventBus);

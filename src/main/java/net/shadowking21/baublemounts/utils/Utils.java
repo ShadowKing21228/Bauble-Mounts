@@ -53,7 +53,7 @@ public class Utils {
         abc.ifPresent(s ->{
             for (int i = 0; i < s.getSlots(); i++)
             {
-                if (MountBauble.BAUBLECOMMON.get() == s.getStackInSlot(i).getItem())
+                if (MountBauble.BAUBLECOMMON.get().equals(s.getStackInSlot(i).getItem()) && s.getStackInSlot(i).hasTag())
                 {
                     if (entity.getUUID().equals(s.getStackInSlot(i).getTag().getCompound("ID").getUUID("ID"))) {
                         stackInSlot.set(true);
@@ -69,7 +69,7 @@ public class Utils {
         abc.ifPresent(s ->{
             for (int i = 0; i < s.getSlots(); i++)
             {
-                if (MountBauble.BAUBLECOMMON.get() == s.getStackInSlot(i).getItem())
+                if (MountBauble.BAUBLECOMMON.get().equals(s.getStackInSlot(i).getItem()))
                 {
                     s.setStackInSlot(i, newMountBauble);
                     break;
