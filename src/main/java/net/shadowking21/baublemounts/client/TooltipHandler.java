@@ -11,6 +11,8 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.sixik.sdmuilib.client.utils.GLHelper;
 import net.sixik.sdmuilib.client.utils.RenderHelper;
@@ -21,7 +23,7 @@ import net.sixik.sdmuilib.client.utils.renders.TextureRenderHelper;
 
 import java.util.List;
 import java.util.Vector;
-
+@OnlyIn(Dist.CLIENT)
 public class TooltipHandler {
     public static void register(RegisterClientTooltipComponentFactoriesEvent event)
     {

@@ -12,6 +12,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class Utils {
     public static ItemStack getMountBauble(Player player) {
+
         LazyOptional<ICuriosItemHandler> abc = CuriosApi.getCuriosInventory(player);
         AtomicReference<ItemStack> stackInSlot = new AtomicReference<>(ItemStack.EMPTY);
         abc.ifPresent(s ->{
@@ -49,7 +50,7 @@ public class Utils {
         abc.ifPresent(s ->{
             for (int i = 0; i < s.getEquippedCurios().getSlots(); i++)
             {
-                if (MountBauble.BAUBLECOMMON.get() == s.getEquippedCurios().getStackInSlot(i).getItem())
+                if (MountBauble.BAUBLECOMMON.get().equals(s.getEquippedCurios().getStackInSlot(i).getItem()) && s.getEquippedCurios().getStackInSlot(i).hasTag())
                 {
                     if (entity.getUUID().equals(s.getEquippedCurios().getStackInSlot(i).getTag().getCompound("ID").getUUID("ID"))) {
                         stackInSlot.set(true);

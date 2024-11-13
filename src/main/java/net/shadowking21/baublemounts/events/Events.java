@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,6 +14,7 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.shadowking21.baublemounts.BMConfig;
 import net.shadowking21.baublemounts.items.MountBauble;
 import net.shadowking21.baublemounts.items.MountBaubleBroken;
 import net.shadowking21.baublemounts.utils.Utils;
@@ -21,14 +23,15 @@ import java.awt.*;
 import java.util.Optional;
 
 public class Events {
-    @SubscribeEvent
-    public void onBaubleClick(PlayerInteractEvent.RightClickBlock event) {
-        if (event.getEntity().level().isClientSide) return;
-        if (event.getEntity() instanceof ServerPlayer player)
-        {
-            MountBauble.spawnMount(player, event.getItemStack(), event.getHitVec().getBlockPos());;
-        }
-    }
+    //@SubscribeEvent
+    //public void onBaubleClick(PlayerInteractEvent.RightClickBlock event) {
+    //    if (event.getEntity().level().isClientSide) return;
+    //    if (event.getEntity() instanceof ServerPlayer player)
+    //    {
+    //        if (player.getItemInHand(InteractionHand.OFF_HAND).getItem().equals(MountBauble.BAUBLECOMMON.get()) || player.getItemInHand(InteractionHand.MAIN_HAND).getItem().equals(MountBauble.BAUBLECOMMON.get()))
+    //            MountBauble.spawnMount(player, event.getItemStack(), event.getHitVec().getBlockPos(), event.getHand());
+    //    }
+    //}
 
     @SubscribeEvent
     public void onMountDead(LivingDeathEvent event)
@@ -38,12 +41,15 @@ public class Events {
         for (ServerPlayer player : entity.getServer().getPlayerList().getPlayers()) {
             if (Utils.isMountBaubleEqualOnPlayer(player, entity))
             {
-                ItemStack itemStack = new ItemStack(MountBaubleBroken.BAUBLEBROKEN.get());
-                ItemStack itemStack1 = Utils.getMountBauble(player);
-                CompoundTag compoundTag = new CompoundTag();
-                compoundTag.merge(itemStack1.getOrCreateTag());
-                itemStack.getOrCreateTag().merge(compoundTag);
-                Utils.updateMountBauble(player, itemStack);
+                if (BMConfig.brokenBaubleAppearance.get())
+                {
+                    ItemStack itemStack1 = Utils.getMountBauble(player);
+                    CompoundTag compoundTag = new CompoundTag();
+                    compoundTag.merge(itemStack1.getOrCreateTag());
+                    ItemStack itemStack = new ItemStack(MountBaubleBroken.BAUBLEBROKEN.get());
+                    itemStack.getOrCreateTag().merge(compoundTag);
+                    Utils.updateMountBauble(player, itemStack);
+                } else if (!BMConfig.brokenBaubleAppearance.get()) Utils.updateMountBauble(player, ItemStack.EMPTY);
             }
         }
     }

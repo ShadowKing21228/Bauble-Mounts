@@ -6,14 +6,17 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import net.shadowking21.baublemounts.BMConfig;
 import net.shadowking21.baublemounts.BaubleMounts;
 import net.shadowking21.baublemounts.sounds.MountSound;
 
@@ -28,31 +31,45 @@ public class MountBauble {
         public boolean isFoil(ItemStack itemStack) {
             return itemStack.getTag() != null && itemStack.getTag().contains("Mount") && !itemStack.getTag().getCompound("Mount").isEmpty();
         }
+        @Override
+        public InteractionResult useOn(UseOnContext pContext)
+        {
+            if (pContext.getPlayer() instanceof ServerPlayer serverPlayer) {
+                if (spawnMount(serverPlayer, pContext.getItemInHand(), pContext.getClickedPos(), pContext.getHand()))
+                    return InteractionResult.SUCCESS;
+            }
+            return InteractionResult.FAIL;
+        }
     });
     public static void register(IEventBus eventBus)
     {
         ITEMS.register(eventBus);
     }
-    public static void spawnMount(ServerPlayer player, ItemStack baubleMount, BlockPos blockPos)
+    public static boolean spawnMount(ServerPlayer player, ItemStack baubleMount, BlockPos blockPos, InteractionHand interactionHand)
     {
         if (baubleMount.getItem() == MountBauble.BAUBLECOMMON.get());
         {
             player.stopRiding();
             CompoundTag mountTag = baubleMount.getOrCreateTag().getCompound("Mount");
-            if (!mountTag.isEmpty() && !BuiltInRegistries.ITEM.getKey(baubleMount.getItem()).toString().contains("mount_bauble_broken")) {
+            if (!mountTag.isEmpty())
+            {
                 ItemStack itemStack = baubleMount.copy();
                 var var = EntityType.create(mountTag, player.level());
                 var.get().setPos(blockPos.getX(), blockPos.getY() + 1, blockPos.getZ());
                 player.level().addFreshEntity(var.get());
                 itemStack.addTagElement("Mount", new CompoundTag());
-                if (player.isCreative()) {
-                    player.setItemInHand(InteractionHand.MAIN_HAND, itemStack);
-                } else {
-                    player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+                if (player.isCreative())
+                {
+                    player.setItemInHand(interactionHand, itemStack);
                 }
-
+                else if (BMConfig.destructionUponRelease.get())
+                    player.setItemInHand(interactionHand, ItemStack.EMPTY);
+                else if (!BMConfig.destructionUponRelease.get())
+                    player.setItemInHand(interactionHand, itemStack);
+                return true;
             }
         }
+        return false;
     }
     public static void spawnRideMount(ServerPlayer player, ItemStack baubleMount)
     {
@@ -62,6 +79,7 @@ public class MountBauble {
             Entity entity = player.getVehicle();
             if (Objects.equals(baubleMount.getTag().getCompound("ID").getUUID("ID"), entity.getUUID())) {
                 player.stopRiding();
+
                 player.level().playSound(entity, var.get().getOnPos(), MountSound.MOUNT_UNSUMMON.get(), SoundSource.NEUTRAL, 1f, 1f);
             }
         }
@@ -73,7 +91,8 @@ public class MountBauble {
             var.get().setPos(blockPos.getX(), blockPos.getY() + 1, blockPos.getZ());
             player.level().addFreshEntity(var.get());
             player.startRiding(var.get(), true);
-            player.getCooldowns().addCooldown(baubleMount.getItem(),100);
+            player.getCooldowns().addCooldown(baubleMount.getItem(),BMConfig.cooldownValue.get() * 20);
+
             player.level().playSound(var.get(), var.get().getOnPos(), MountSound.MOUNT_SUMMON.get(), SoundSource.NEUTRAL, 1f, 1f);
          }
     }

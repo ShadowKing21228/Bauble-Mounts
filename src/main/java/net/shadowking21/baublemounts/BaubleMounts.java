@@ -25,7 +25,9 @@ import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -46,6 +48,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static net.shadowking21.baublemounts.BaubleMounts.ClientModEvents.tooltipRender;
+
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(BaubleMounts.MODID)
 public class BaubleMounts {
@@ -53,17 +57,18 @@ public class BaubleMounts {
     public static final String MODID = "baublemounts";
     public BaubleMounts() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        modEventBus.addListener(this::onRegisterTooltip);
         MountBauble.register(modEventBus);
         MountBaubleBroken.register(modEventBus);
         modEventBus.addListener(this::commonSetup);
         MinecraftForge.EVENT_BUS.register(this);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, BMConfig.SPEC);
         modEventBus.addListener(this::addCreative);
         MinecraftForge.EVENT_BUS.register(new Events());
         ModNetwork.init();
         MountSound.register(modEventBus);
         if (FMLEnvironment.dist.isClient())
         {
+            modEventBus.addListener(this::onRegisterTooltip);
             new ClientModEvents().init();
         }
     }
@@ -77,6 +82,8 @@ public class BaubleMounts {
     }
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents {
+        @OnlyIn(Dist.CLIENT)
+        public static TooltipHandler.TooltipRender tooltipRender = new TooltipHandler.TooltipRender(null);
         public void init() {
             IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
             MinecraftForge.EVENT_BUS.addListener(this::keyMountSummon);
@@ -107,11 +114,12 @@ public class BaubleMounts {
     public void onServerStarting(ServerStartingEvent event) {
 
     }
+    @OnlyIn(Dist.CLIENT)
     public void onRegisterTooltip (RegisterClientTooltipComponentFactoriesEvent event)
     {
         TooltipHandler.register(event);
     }
-    public static TooltipHandler.TooltipRender tooltipRender = new TooltipHandler.TooltipRender(null);
+    @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public void onRenderTooltip (RenderTooltipEvent.Pre event)
     {
