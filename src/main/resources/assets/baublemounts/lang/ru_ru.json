@@ -1,9 +1,20 @@
 {
   "item.baublemounts.mount_bauble" : "Ездовая безделушка",
   "item.baublemounts.mount_bauble_broken" : "Сломанная ездовая безделушка",
-  "curios.identifier.mountbauble": "Ездовая безделушка",
+  "accessories.slot.mountbauble": "Ездовая безделушка",
   "key.baublemounts.mountsummon": "Призыв ездового животного",
   "key.categories.baublemounts": "Езделушка",
-  "tooltip.bauble_mounts.getname" : "Имя ездового животного:",
-  "tooltip.bauble_mounts.gethealth" : "Здоровье ездового животного:"
+  "tooltip.baublemounts.getname" : "Имя ездового животного: %s",
+  "tooltip.baublemounts.gethealth" : "Здоровье ездового животного: %s",
+  "tooltip.baublemounts.desc" : "§oЗажмите Shift для дополнительной информации",
+  "tooltip.baublemounts.shiftdesc" : "С помощью этого предмета можно хранить ездовых питомцев, нажав по ним ПКМ. После этого можно высвободить ездового животного, нажав ПКМ повторно по блоку, или положить его в слот §eЕздовой безделушки§r. Чтобы высвободить или забрать ездового питомца из слота, нажмите %s",
+  "tooltip.baublemounts.shiftdescbroken" : "Эта безделушка сломана, поскольку ездовой питомец находящийся в ней умер, пока находился снаружи. §eВосстановите§r её крафтом, чтобы ездового животного снова можно было вызвать.",
+  "sounds.baublemounts.mount_summon": "Призыв ездового животного",
+  "sounds.baublemounts.mount_unsummon": "Исчезновение ездового животного",
+  "baublemounts.configuration.section.baublemounts.common.toml": "Конфигурация мода Ездовая безделушка",
+  "baublemounts.configuration.title": "Common конфигурация",
+  "config.baublemounts.coolownValue" : "Время перезарядки",
+  "config.baublemounts.destructionUponRelease" : "Уничтожение при вызове на ПКМ",
+  "config.baublemounts.brokenBaubleAppearance" : "Появление сломанной безделушки",
+  "config.baublemounts.mountList" : "Чёрный список ездовых животных"
 }

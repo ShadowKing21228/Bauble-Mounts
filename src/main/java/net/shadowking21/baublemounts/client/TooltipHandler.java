@@ -69,7 +69,7 @@ public class TooltipHandler {
             if (component.entity != null)
             {
                 vector2d = getEntitySize((LivingEntity) component.entity, 0.85);
-                tooltipSize.setY((int) (vector2.y+(8*var.size()) + vector2d.y));
+                tooltipSize.setY((int) (vector2.y+(8*var.size()) + vector2d.y)+40);
             }
             else tooltipSize.setY(vector2.y+(8*var.size()));
             if (vector2d.x > vector2.x+16)

@@ -1,9 +1,20 @@
 {
   "item.baublemounts.mount_bauble" : "Mount Bauble",
   "item.baublemounts.mount_bauble_broken" : "Broken Mount Bauble",
-  "curios.identifier.mountbauble": "Mount Bauble",
+  "accessories.slot.mountbauble": "Mount Bauble",
   "key.baublemounts.mountsummon": "Mount Summon",
   "key.categories.baublemounts": "Bauble Mounts",
-  "tooltip.bauble_mounts.getname" : "Mount Name:",
-  "tooltip.bauble_mounts.gethealth" : "Mount Health:"
+  "tooltip.baublemounts.getname" : "Mount Name: %s",
+  "tooltip.baublemounts.gethealth" : "Mount Health: %s",
+  "tooltip.baublemounts.desc" : "§oPress Shift for more information",
+  "tooltip.baublemounts.shiftdesc" : "With this item, you can store mounts by pressing RMB on them. You can then release the mount by pressing RMB again on the unit, or put it in the §eMount Bauble§r slot. To release or take a mount from a slot, press %s",
+  "tooltip.baublemounts.shiftdescbroken" : "This bauble is broken because the mount inside it died while outside. Repair it by crafting it so that the mount can be summoned again.",
+  "sounds.baublemounts.mount_summon": "Mount Summon",
+  "sounds.baublemounts.mount_unsummon": "Mount Disappear",
+  "baublemounts.configuration.section.baublemounts.common.toml": "Bauble Mounts Config",
+  "baublemounts.configuration.title": "Common BM configuration",
+  "config.baublemounts.coolownValue" : "Cooldown Time",
+  "config.baublemounts.destructionUponRelease" : "Destruction upon release on RMB",
+  "config.baublemounts.brokenBaubleAppearance" : "Broken Bauble Appearance",
+  "config.baublemounts.mountList" : "Mount BlackList"
 }

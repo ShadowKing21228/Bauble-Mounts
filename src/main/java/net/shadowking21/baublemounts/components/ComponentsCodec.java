@@ -2,7 +2,10 @@ package net.shadowking21.baublemounts.components;
 
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.mojang.util.UUIDTypeAdapter;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
@@ -10,11 +13,14 @@ import java.util.UUID;
 
 
 public class ComponentsCodec {
-        //String string = uuid.toString();
-        //UUID uuid2 = UUID.fromString(string);
-        //CompoundTag compoundtag = new CompoundTag();
-        //String string2 = compoundtag.toString();
-        //compoundtag.
+    public CompoundTag compoundTag;
+    public String uuid;
+    public static final Codec<MountRecord> MOUNT_CODEC = RecordCodecBuilder.create(mountRecordInstance ->
+            mountRecordInstance.group(
+                    CompoundTag.CODEC.fieldOf("compoundTag").forGetter(MountRecord::compoundTag),
+                    Codec.STRING.fieldOf("uuid").forGetter(MountRecord::uuid)
+            ).apply(mountRecordInstance, MountRecord::new)
+    );
     public static final StreamCodec<ByteBuf, MountRecord> BASIC_STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.COMPOUND_TAG, MountRecord::compoundTag,
             ByteBufCodecs.STRING_UTF8, MountRecord::uuid,

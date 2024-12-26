@@ -1,22 +1,23 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "III",
-    "ICI",
-    "IGI"
-  ],
   "key": {
     "I": {
-      "tag" : "forge:nuggets/gold"
+      "tag": "c:nuggets/gold"
     },
-    "G": {
+    "G":{
       "item": "minecraft:echo_shard"
     },
     "C": {
       "item": "baublemounts:mount_bauble_broken"
     }
   },
+  "pattern": [
+    "III",
+    "ICI",
+    "IGI"
+  ],
   "result": {
-    "item": "baublemounts:mount_bauble"
+    "count": 1,
+    "id": "baublemounts:mount_bauble"
   }
 }
