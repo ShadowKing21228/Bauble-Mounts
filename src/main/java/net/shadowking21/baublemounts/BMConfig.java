@@ -1,21 +1,7 @@
 package net.shadowking21.baublemounts;
 
-import com.electronwill.nightconfig.core.CommentedConfig;
-import com.electronwill.nightconfig.core.UnmodifiableCommentedConfig;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Entity;
-import net.neoforged.fml.config.IConfigSpec;
-import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
-import net.neoforged.neoforge.common.NeoForgeConfig;
 import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 public class BMConfig {
     public static final BMConfig CONFIG;

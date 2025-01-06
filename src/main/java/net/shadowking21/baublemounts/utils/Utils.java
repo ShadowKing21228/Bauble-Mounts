@@ -1,24 +1,20 @@
 package net.shadowking21.baublemounts.utils;
 
-import com.google.errorprone.annotations.MustBeClosed;
-import com.jcraft.jorbis.Block;
 import io.wispforest.accessories.api.AccessoriesCapability;
 import io.wispforest.accessories.api.slot.SlotTypeReference;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.shadowking21.baublemounts.BMConfig;
 import net.shadowking21.baublemounts.components.MountComponents;
 import net.shadowking21.baublemounts.components.MountRecord;
 import net.shadowking21.baublemounts.items.MountBauble;
 
-import java.util.Objects;
 import java.util.UUID;
 
 public class Utils {
@@ -126,7 +122,7 @@ public class Utils {
             CompoundTag mountTag = mountBauble.get(MountComponents.MOUNT_COMPONENTS.get()).compoundTag();
             if (!mountTag.isEmpty()) { // Компоненты есть, на CompoundTag там не нулевой?
                 ItemStack itemStack = mountBauble.copy();
-                var var = EntityType.create(mountTag, player.level());
+                var var = EntityType.create(mountTag, player.level(), EntitySpawnReason.MOB_SUMMONED);
                 if (var.isPresent()) { // mountTag не нулевой, но уровень правилен?
                     var.get().setPos(blockPos.getX(), blockPos.getY() + 1, blockPos.getZ());
                     player.level().addFreshEntity(var.get());

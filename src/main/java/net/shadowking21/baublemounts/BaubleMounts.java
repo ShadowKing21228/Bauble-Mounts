@@ -1,6 +1,5 @@
 package net.shadowking21.baublemounts;
 
-import com.google.common.reflect.Reflection;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.KeyMapping;
@@ -36,11 +35,9 @@ import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.network.registration.NetworkRegistry;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.shadowking21.baublemounts.client.TooltipHandler;
 import net.shadowking21.baublemounts.components.MountComponents;
-import net.shadowking21.baublemounts.components.MountRecord;
 import net.shadowking21.baublemounts.events.Events;
 import net.shadowking21.baublemounts.items.MountBauble;
 import net.shadowking21.baublemounts.network.SendSpawnEntityC2S;
@@ -51,7 +48,6 @@ import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Optional;
 
 @Mod(BaubleMounts.MODID)
@@ -69,7 +65,7 @@ public class BaubleMounts {
         NeoForge.EVENT_BUS.register(new Events());
         MountSound.SOUND_EVENTS.register(modEventBus);
         if (FMLEnvironment.dist.isClient()) {
-            modEventBus.addListener(this::onRegisterTooltip);
+        //    modEventBus.addListener(this::onRegisterTooltip);
             new ClientModEvents().init();
         }
         MountComponents.COMPONENT_TYPES.register(modEventBus);
@@ -118,38 +114,38 @@ public class BaubleMounts {
             }
         }
     }
-    @OnlyIn(Dist.CLIENT)
-    public void onRegisterTooltip(RegisterClientTooltipComponentFactoriesEvent event) {
-        TooltipHandler.register(event);
-    }
-    @OnlyIn(Dist.CLIENT)
-    public static TooltipHandler.TooltipRender tooltipRender = new TooltipHandler.TooltipRender(null);
+    //@OnlyIn(Dist.CLIENT)
+    //public void onRegisterTooltip(RegisterClientTooltipComponentFactoriesEvent event) {
+    //    TooltipHandler.register(event);
+    //}
+    //@OnlyIn(Dist.CLIENT)
+    //public static TooltipHandler.TooltipRender tooltipRender = new TooltipHandler.TooltipRender(null);
 
-    @OnlyIn(Dist.CLIENT)
-    @SubscribeEvent
-    public void onRenderTooltip(RenderTooltipEvent.Pre event) {
-        ItemStack itemStack = event.getItemStack();
-        Optional<Entity> optionalEntity;
-        Entity entity = null;
-        if (itemStack.getItem() == MountBauble.BAUBLECOMMON.get() || itemStack.getItem() == MountBauble.BAUBLEBROKEN.get()) {
-            if (Utils.hasMountComponents(itemStack)) {
-                CompoundTag compoundTag = itemStack.get(MountComponents.MOUNT_COMPONENTS.get()).compoundTag();
-                assert Minecraft.getInstance().player != null;
-                if (!compoundTag.isEmpty()) {
-                    optionalEntity = EntityType.create(compoundTag, Minecraft.getInstance().player.level());
-                    entity = optionalEntity.get();
-                    if (BuiltInRegistries.ENTITY_TYPE.getKey(optionalEntity.get().getType()).getNamespace().equals("iceandfire") || BuiltInRegistries.ENTITY_TYPE.getKey(optionalEntity.get().getType()).getNamespace().equals("dragonmounts"))
-                        entity = null;
-                }
-            }
-            TooltipHandler.BaubleMountsTooltipComponent tooltipComponent = new TooltipHandler.BaubleMountsTooltipComponent(itemStack, entity);
-            tooltipRender.component = tooltipComponent;
-            GuiGraphics guiGraphics = event.getGraphics();
-            Vector2ic vector2ic = DefaultTooltipPositioner.INSTANCE.positionTooltip(guiGraphics.guiWidth(), guiGraphics.guiHeight(), event.getX(), event.getY(), 0, 10);
-            tooltipRender.renderImage(event.getFont(), vector2ic.x(), vector2ic.y(), guiGraphics);
-            event.setCanceled(true);
-        }
-    }
+    //@OnlyIn(Dist.CLIENT)
+    //@SubscribeEvent
+    //public void onRenderTooltip(RenderTooltipEvent.Pre event) {
+    //    ItemStack itemStack = event.getItemStack();
+    //    Optional<Entity> optionalEntity;
+    //    Entity entity = null;
+    //    if (itemStack.getItem() == MountBauble.BAUBLECOMMON.get() || itemStack.getItem() == MountBauble.BAUBLEBROKEN.get()) {
+    //        if (Utils.hasMountComponents(itemStack)) {
+    //            CompoundTag compoundTag = itemStack.get(MountComponents.MOUNT_COMPONENTS.get()).compoundTag();
+    //            assert Minecraft.getInstance().player != null;
+    //            if (!compoundTag.isEmpty()) {
+    //                optionalEntity = EntityType.create(compoundTag, Minecraft.getInstance().player.level());
+    //                entity = optionalEntity.get();
+    //                if (BuiltInRegistries.ENTITY_TYPE.getKey(optionalEntity.get().getType()).getNamespace().equals("iceandfire") || BuiltInRegistries.ENTITY_TYPE.getKey(optionalEntity.get().getType()).getNamespace().equals("dragonmounts"))
+    //                    entity = null;
+    //            }
+    //        }
+    //        TooltipHandler.BaubleMountsTooltipComponent tooltipComponent = new TooltipHandler.BaubleMountsTooltipComponent(itemStack, entity);
+    //        tooltipRender.component = tooltipComponent;
+    //        GuiGraphics guiGraphics = event.getGraphics();
+    //        Vector2ic vector2ic = DefaultTooltipPositioner.INSTANCE.positionTooltip(guiGraphics.guiWidth(), guiGraphics.guiHeight(), event.getX(), event.getY(), 0, 10);
+    //        tooltipRender.renderImage(event.getFont(), vector2ic.x(), vector2ic.y(), guiGraphics);
+    //        event.setCanceled(true);
+    //    }
+    //}
 
     public static ResourceLocation prefix(String name) {
         return ResourceLocation.fromNamespaceAndPath(MODID, name.toLowerCase(Locale.ROOT));

@@ -1,15 +1,10 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
-    "I": {
-      "tag": "c:nuggets/gold"
-    },
-    "G":{
-      "item": "minecraft:echo_shard"
-    },
-    "C": {
-      "item": "baublemounts:mount_bauble_broken"
-    }
+    "I": "minecraft:gold_nugget",
+    "G": "minecraft:echo_shard",
+    "C": "baublemounts:mount_bauble_broken"
   },
   "pattern": [
     "III",

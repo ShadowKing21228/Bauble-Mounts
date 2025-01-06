@@ -1,21 +1,18 @@
 package net.shadowking21.baublemounts.items;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.FormattedText;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -32,7 +29,6 @@ import net.shadowking21.baublemounts.components.MountComponents;
 import net.shadowking21.baublemounts.components.MountRecord;
 import net.shadowking21.baublemounts.sounds.MountSound;
 import net.shadowking21.baublemounts.utils.Utils;
-import org.apache.logging.log4j.core.tools.picocli.CommandLine;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -43,12 +39,14 @@ import java.util.UUID;
 import static net.shadowking21.baublemounts.BaubleMounts.ClientModEvents.MOUNT_SUMMON_KEY;
 
 public class MountBauble {
-
+    private static ResourceKey<Item> bmItemId(String name) {
+        return ResourceKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(BaubleMounts.MODID, name));
+    }
     public static final DeferredRegister.Items ITEMS =
             DeferredRegister.createItems(BaubleMounts.MODID);
-    public static final DeferredItem<Item> BAUBLEBROKEN = ITEMS.register("mount_bauble_broken", () -> new Item(new Item.Properties().stacksTo(1).component(MountComponents.MOUNT_COMPONENTS, MountRecord.DEFAULT)){
+    public static final DeferredItem<Item> BAUBLEBROKEN = ITEMS.register("mount_bauble_broken", () -> new Item(new Item.Properties().setId(bmItemId("mount_bauble_broken")).stacksTo(1).component(MountComponents.MOUNT_COMPONENTS, MountRecord.DEFAULT)){
         @Override
-        public void appendHoverText(ItemStack stack, @NotNull TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
             if (Screen.hasShiftDown()) {
                 tooltipComponents.add(Component.translatable("tooltip.baublemounts.shiftdescbroken"));
             } else {
@@ -58,23 +56,23 @@ public class MountBauble {
             {
                 CompoundTag compoundTag = stack.get(MountComponents.MOUNT_COMPONENTS.get()).compoundTag();
                 if (context.level() != null) {
-                    Optional<Entity> entityMount = EntityType.create(compoundTag, context.level());
+                    Optional<Entity> entityMount = EntityType.create(compoundTag, context.level(), EntitySpawnReason.MOB_SUMMONED);
                     if (entityMount.isPresent()) {
                         Entity entity = entityMount.get();
-                        LivingEntity entity1 = (LivingEntity) entity;
+                        LivingEntity livingEntity = (LivingEntity) entity;
                         String d = entity.getDisplayName().getString();
                         if (d.contains("[")) d = d.replace("[", " ");
                         if (d.contains("]")) d = d.replace("]", " ");
 
                         tooltipComponents.add(Component.translatable("tooltip.baublemounts.getname", d));
-                        //tooltipComponents.add(Component.translatable("tooltip.baublemounts.gethealth", (entity1.getHealth() + " / " + entity1.getMaxHealth())));
+                        tooltipComponents.add(Component.translatable("tooltip.baublemounts.gethealth", (livingEntity.getHealth() + " / " + livingEntity.getMaxHealth())));
                     }
                 }
             }
             super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
         }
     });
-    public static final DeferredItem<Item> BAUBLECOMMON = ITEMS.register("mount_bauble", () -> new Item(new Item.Properties().stacksTo(1).component(MountComponents.MOUNT_COMPONENTS.get(), MountRecord.DEFAULT))
+    public static final DeferredItem<Item> BAUBLECOMMON = ITEMS.register("mount_bauble", () -> new Item(new Item.Properties().setId(bmItemId("mount_bauble")).stacksTo(1).component(MountComponents.MOUNT_COMPONENTS.get(), MountRecord.DEFAULT))
     {
        @Override
        public boolean isFoil(ItemStack itemStack) {
@@ -92,27 +90,24 @@ public class MountBauble {
                return InteractionResult.FAIL;
        }
         @Override
-        public void appendHoverText(ItemStack stack, @NotNull TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
             if (Screen.hasShiftDown()) {
                 tooltipComponents.add(Component.translatable("tooltip.baublemounts.shiftdesc",  MOUNT_SUMMON_KEY.getKey().getDisplayName().getString()));
             } else {
                 tooltipComponents.add(Component.translatable("tooltip.baublemounts.desc"));
             }
-            if (stack.getComponents().has(MountComponents.MOUNT_COMPONENTS.get()) && stack.get(MountComponents.MOUNT_COMPONENTS.get()).compoundTag() != null)
+            if (Utils.hasMountComponents(stack))
             {
-                CompoundTag compoundTag = stack.get(MountComponents.MOUNT_COMPONENTS.get()).compoundTag();
-                if (context.level() != null) {
-                    Optional<Entity> entityMount = EntityType.create(compoundTag, Objects.requireNonNull(context.level()));
-                    if (entityMount.isPresent()) {
-                        Entity entity = entityMount.get();
-                        LivingEntity entity1 = (LivingEntity) entity;
-                        String d = entity.getDisplayName().getString();
-                        if (d.contains("[")) d = d.replace("[", " ");
-                        if (d.contains("]")) d = d.replace("]", " ");
-
-                        tooltipComponents.add(Component.translatable("tooltip.baublemounts.getname", d));
-                        tooltipComponents.add(Component.translatable("tooltip.baublemounts.gethealth", (entity1.getHealth() + " / " + entity1.getMaxHealth())));
-                    }
+                CompoundTag compoundTag = Objects.requireNonNull(stack.get(MountComponents.MOUNT_COMPONENTS.get())).compoundTag();
+                Optional<Entity> entityMount = EntityType.create(compoundTag, Objects.requireNonNull(context.level()), EntitySpawnReason.MOB_SUMMONED);
+                if (entityMount.isPresent()) {
+                    Entity entity = entityMount.get();
+                    LivingEntity entity1 = (LivingEntity) entity;
+                    String d = entity.getDisplayName().getString();
+                    if (d.contains("[")) d = d.replace("[", " ");
+                    if (d.contains("]")) d = d.replace("]", " ");
+                    tooltipComponents.add(Component.translatable("tooltip.baublemounts.getname", d));
+                    tooltipComponents.add(Component.translatable("tooltip.baublemounts.gethealth", (entity1.getHealth() + " / " + entity1.getMaxHealth())));
                 }
             }
             super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
@@ -126,22 +121,22 @@ public class MountBauble {
     {
         if (player.isPassenger()) {
             Entity entity = player.getVehicle();
-            var entityType = EntityType.create(baubleMount.get(MountComponents.MOUNT_COMPONENTS.get()).compoundTag(), player.level());
+            var entityType = EntityType.create(baubleMount.get(MountComponents.MOUNT_COMPONENTS.get()).compoundTag(), player.level(), EntitySpawnReason.MOB_SUMMONED);
             if (Objects.equals(UUID.fromString(baubleMount.get(MountComponents.MOUNT_COMPONENTS).uuid()), entity.getUUID())) {
                 player.level().playSound(entity, entityType.get().getOnPos(), MountSound.MOUNT_UNSUMMON.get(), SoundSource.NEUTRAL, 1f, 1f);
                 player.stopRiding();
             }
         }
-        else if (!player.getCooldowns().isOnCooldown(baubleMount.getItem()))
+        else if (!player.getCooldowns().isOnCooldown(baubleMount))
          {
              CompoundTag mountTag = baubleMount.get(MountComponents.MOUNT_COMPONENTS).compoundTag();
-             var var = EntityType.create(mountTag, player.level());
+             var var = EntityType.create(mountTag, player.level(), EntitySpawnReason.MOB_SUMMONED);
              if (var.isPresent()) {
                  BlockPos blockPos = player.getOnPos();
                  var.get().setPos(blockPos.getX(), blockPos.getY() + 1, blockPos.getZ());
                  player.level().addFreshEntity(var.get());
                  player.startRiding(var.get(), true);
-                 player.getCooldowns().addCooldown(baubleMount.getItem(), BMConfig.CONFIG.cooldownValue.get() * 20);
+                 player.getCooldowns().addCooldown(baubleMount, BMConfig.CONFIG.cooldownValue.get() * 20);
                  player.level().playSound(var.get(), var.get().getOnPos(), MountSound.MOUNT_SUMMON.get(), SoundSource.NEUTRAL, 1f, 1f);
                  //Utils.whileMountBaubleEquipped(player);
              }
