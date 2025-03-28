@@ -8,6 +8,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
@@ -17,6 +18,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.shadowking21.baublemounts.BMConfig;
 import net.shadowking21.baublemounts.items.MountBauble;
 import net.shadowking21.baublemounts.items.MountBaubleBroken;
+import net.shadowking21.baublemounts.items.VehicleBauble;
+import net.shadowking21.baublemounts.items.VehicleBaubleBroken;
 import net.shadowking21.baublemounts.utils.Utils;
 
 import java.awt.*;
@@ -44,12 +47,20 @@ public class Events {
                 if (BMConfig.brokenBaubleAppearance.get())
                 {
                     ItemStack itemStack1 = Utils.getMountBauble(player);
-                    CompoundTag compoundTag = new CompoundTag();
-                    compoundTag.merge(itemStack1.getOrCreateTag());
-                    ItemStack itemStack = new ItemStack(MountBaubleBroken.BAUBLEBROKEN.get());
-                    itemStack.getOrCreateTag().merge(compoundTag);
-                    Utils.updateMountBauble(player, itemStack);
-                } else if (!BMConfig.brokenBaubleAppearance.get()) Utils.updateMountBauble(player, ItemStack.EMPTY);
+                    if (itemStack1.getItem() == MountBauble.BAUBLECOMMON.get()) {
+                        CompoundTag compoundTag = new CompoundTag();
+                        compoundTag.merge(itemStack1.getOrCreateTag());
+                        ItemStack itemStack = new ItemStack(MountBaubleBroken.BAUBLEBROKEN.get());
+                        itemStack.getOrCreateTag().merge(compoundTag);
+                        Utils.updateMountBauble(player, itemStack);
+                    }
+                    else if (itemStack1.getItem() == VehicleBauble.BAUBLEVEHICLE.get())
+                    {
+                        ItemStack itemStack = new ItemStack(VehicleBaubleBroken.BAUBLEVEHICLEBROKEN.get());
+                        Utils.updateMountBauble(player, itemStack);
+                    }
+                }
+                else if (!BMConfig.brokenBaubleAppearance.get()) Utils.updateMountBauble(player, ItemStack.EMPTY);
             }
         }
     }
@@ -69,24 +80,24 @@ public class Events {
             }
         }
     }
-    @SubscribeEvent
-    public void onItemTooltip(ItemTooltipEvent event) {
-        ItemStack stack = event.getItemStack();
-
-        if (stack.hasTag() && stack.getTag().contains("Mount") && !stack.getTag().getCompound("Mount").isEmpty()) {
-            CompoundTag compoundTag = stack.getTag().getCompound("Mount");
-            Optional<Entity> d1 = EntityType.create(compoundTag, event.getEntity().level());
-            if(d1.isPresent()) {
-                Entity entity = d1.get();
-                LivingEntity entity1 = (LivingEntity) entity;
-                String d = entity.getDisplayName().getString();
-                if (d.contains("[")) d = d.replace("[", " ");
-                if (d.contains("]")) d = d.replace("]", " ");
-
-                event.getToolTip().add(Component.translatable("tooltip.bauble_mounts.getname", d));
-                event.getToolTip().add(Component.translatable("tooltip.bauble_mounts.gethealth", (entity1.getHealth() + " / " + entity1.getMaxHealth())));
-            }
-        }
-    }
+    //@SubscribeEvent
+    //public void onItemTooltip(ItemTooltipEvent event) {
+    //    ItemStack stack = event.getItemStack();
+//
+    //    if (stack.hasTag() && stack.getTag().contains("Mount") && !stack.getTag().getCompound("Mount").isEmpty()) {
+    //        CompoundTag compoundTag = stack.getTag().getCompound("Mount");
+    //        Optional<Entity> d1 = EntityType.create(compoundTag, event.getEntity().level());
+    //        if(d1.isPresent()) {
+    //            Entity entity = d1.get();
+    //            LivingEntity entity1 = (LivingEntity) entity;
+    //            String d = entity.getDisplayName().getString();
+    //            if (d.contains("[")) d = d.replace("[", " ");
+    //            if (d.contains("]")) d = d.replace("]", " ");
+//
+    //            event.getToolTip().add(Component.translatable("tooltip.baublemounts.getname", d));
+    //            event.getToolTip().add(Component.translatable("tooltip.baublemounts.gethealth", (entity1.getHealth() + " / " + entity1.getMaxHealth())));
+    //        }
+    //    }
+    //}
 
 }

@@ -19,6 +19,4 @@ public class MountSound {
     public static void register(IEventBus eventBus) {SOUND_EVENTS.register(eventBus);}
     public static final RegistryObject<SoundEvent> MOUNT_SUMMON = registerSoundEvents("mount_summon");
     public static final RegistryObject<SoundEvent> MOUNT_UNSUMMON = registerSoundEvents("mount_unsummon");
-
-
 }

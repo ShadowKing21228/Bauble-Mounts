@@ -13,6 +13,7 @@ public class BMConfig {
     public static final ForgeConfigSpec.BooleanValue destructionUponRelease;
     public static final ForgeConfigSpec.BooleanValue brokenBaubleAppearance;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> mountList;
+    public static final ForgeConfigSpec.BooleanValue isCustomTooltipRender;
 
     static {
         BUILDER.push("General");
@@ -33,6 +34,10 @@ public class BMConfig {
                 .comment("A blacklist of entities (It is assumed that mounts) that cannot be placed in Mount Bauble")
                 .defineList("mountList", Arrays.asList("modname:entityname"),
                         obj -> obj instanceof String);
+
+        isCustomTooltipRender = BUILDER
+                .comment("If true, custom tooltip is shows on Bauble Mounts items Default: true")
+                .define("isCustomTooltipRender", true);
 
         BUILDER.pop();
         SPEC = BUILDER.build();

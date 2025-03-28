@@ -1,7 +1,6 @@
 package net.shadowking21.baublemounts.mixin;
 
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.shadowking21.baublemounts.BMConfig;
@@ -11,18 +10,18 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(LivingEntity.class)
-public abstract class StopRidingMixin {
-    public LivingEntity playerEntity = (LivingEntity)(Object)this;
-    @Inject(method = "dismountVehicle(Lnet/minecraft/world/entity/Entity;)V", at = @At(value = "HEAD"))
-    private void onStopRiding(Entity entity, CallbackInfo ci)
+@Mixin(Entity.class)
+public abstract class StopRidingVehicleMixin {
+    public Entity playerEntity = (Entity)(Object)this;
+    @Inject(method = "removeVehicle()V", at = @At(value = "HEAD"))
+    private void onStopRidingVehicle(CallbackInfo ci)
     {
-        if (playerEntity instanceof Player player && Utils.isMountBaubleEqualOnPlayer(player, entity)) {
+        if (playerEntity instanceof Player player && player.getVehicle() == null && Utils.isMountBaubleEqualOnPlayer(player, player.getVehicle())) {
             ItemStack itemStack = Utils.getMountBauble(player);
-            Utils.updateMountData(entity, itemStack);
+            Utils.updateMountData(player, itemStack);
             Utils.updateMountBauble(player, itemStack);
             player.getCooldowns().addCooldown(itemStack.getItem(), BMConfig.cooldownValue.get() * 20);
-            entity.discard();
+            player.getVehicle().discard();
         }
     }
 }

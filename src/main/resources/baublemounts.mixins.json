@@ -6,7 +6,8 @@
   "refmap": "baublemounts.refmap.json",
   "mixins": [
     "StartRidingMixin",
-    "StopRidingMixin"
+    "StopRidingMixin",
+    "StopRidingVehicleMixin"
   ],
   "client": [
   ],

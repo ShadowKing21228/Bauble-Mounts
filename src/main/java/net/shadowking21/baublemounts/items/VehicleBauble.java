@@ -1,9 +1,8 @@
 package net.shadowking21.baublemounts.items;
 
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -13,6 +12,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -26,7 +26,6 @@ import net.shadowking21.baublemounts.BMConfig;
 import net.shadowking21.baublemounts.BaubleMounts;
 import net.shadowking21.baublemounts.sounds.MountSound;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
@@ -34,11 +33,11 @@ import java.util.Optional;
 
 import static net.shadowking21.baublemounts.BaubleMounts.ClientModEvents.MOUNT_SUMMON_KEY;
 
-public class MountBauble {
+public class VehicleBauble {
     public static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(ForgeRegistries.ITEMS, BaubleMounts.MODID);
 
-    public static final RegistryObject<Item> BAUBLECOMMON = ITEMS.register("mount_bauble", () -> new Item(new Item.Properties().stacksTo(1)){
+    public static final RegistryObject<Item> BAUBLEVEHICLE = ITEMS.register("vehicle_bauble", () -> new Item(new Item.Properties().stacksTo(1)){
         @Override
         public boolean isFoil(ItemStack itemStack) {
             return itemStack.getTag() != null && itemStack.getTag().contains("Mount") && !itemStack.getTag().getCompound("Mount").isEmpty();
@@ -53,9 +52,9 @@ public class MountBauble {
             return InteractionResult.FAIL;
         }
         @Override
-        public void appendHoverText(ItemStack stack, Level level, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        public void appendHoverText(@NotNull ItemStack stack, Level level, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
             if (Screen.hasShiftDown()) {
-                tooltipComponents.add(Component.translatable("tooltip.baublemounts.shiftdesc", "§e" + MOUNT_SUMMON_KEY.getKey().getDisplayName().getString() + "§r."));
+                tooltipComponents.add(Component.translatable("tooltip.baublemounts.vehicleshiftdesc", "§e" + MOUNT_SUMMON_KEY.getKey().getDisplayName().getString() + "§r."));
             } else {
                 tooltipComponents.add(Component.translatable("tooltip.baublemounts.desc"));
             }
@@ -64,13 +63,11 @@ public class MountBauble {
                 Optional<Entity> d1 = EntityType.create(compoundTag, level);
                 if (d1.isPresent()) {
                     Entity entity = d1.get();
-                    LivingEntity entity1 = (LivingEntity) entity;
                     String d = entity.getDisplayName().getString();
                     if (d.contains("[")) d = d.replace("[", " ");
                     if (d.contains("]")) d = d.replace("]", " ");
 
                     tooltipComponents.add(Component.translatable("tooltip.baublemounts.getname", d));
-                    tooltipComponents.add(Component.translatable("tooltip.baublemounts.gethealth", (entity1.getHealth() + " / " + entity1.getMaxHealth())));
                 }
             }
             super.appendHoverText(stack, level, tooltipComponents, tooltipFlag);
@@ -82,7 +79,7 @@ public class MountBauble {
     }
     public static boolean spawnMount(ServerPlayer player, ItemStack baubleMount, BlockPos blockPos, InteractionHand interactionHand)
     {
-        if (baubleMount.getItem() == MountBauble.BAUBLECOMMON.get());
+        if (baubleMount.getItem() == VehicleBauble.BAUBLEVEHICLE.get());
         {
             //player.stopRiding();
             CompoundTag mountTag = baubleMount.getOrCreateTag().getCompound("Mount");
@@ -93,10 +90,7 @@ public class MountBauble {
                 var.get().setPos(blockPos.getX(), blockPos.getY() + 1, blockPos.getZ());
                 player.level().addFreshEntity(var.get());
                 itemStack.addTagElement("Mount", new CompoundTag());
-                if (player.isCreative())
-                {
-                    player.setItemInHand(interactionHand, itemStack);
-                }
+                if (player.isCreative()) player.setItemInHand(interactionHand, itemStack);
                 else if (BMConfig.destructionUponRelease.get())
                     player.setItemInHand(interactionHand, ItemStack.EMPTY);
                 else if (!BMConfig.destructionUponRelease.get())
@@ -112,22 +106,25 @@ public class MountBauble {
             CompoundTag mountTag = baubleMount.getOrCreateTag().getCompound("Mount");
             var var = EntityType.create(mountTag, player.level());
             Entity entity = player.getVehicle();
-            if (Objects.equals(baubleMount.getTag().getCompound("ID").getUUID("ID"), entity.getUUID())) {
+            if (entity != null && Objects.equals(baubleMount.getTag().getCompound("ID").getUUID("ID"), entity.getUUID())) {
                 player.stopRiding();
+                baubleMount.getOrCreateTag().getCompound("Mount").merge(mountTag);
                 player.level().playSound(entity, var.get().getOnPos(), MountSound.MOUNT_UNSUMMON.get(), SoundSource.NEUTRAL, 1f, 1f);
             }
         }
         else if (!player.getCooldowns().isOnCooldown(baubleMount.getItem()))
-         {
-             CompoundTag mountTag = baubleMount.getOrCreateTag().getCompound("Mount");
-             var var = EntityType.create(mountTag, player.level());
+        {
+            CompoundTag mountTag = baubleMount.getOrCreateTag().getCompound("Mount");
             BlockPos blockPos = player.getOnPos();
-            var.get().setPos(blockPos.getX(), blockPos.getY() + 1, blockPos.getZ());
-            player.level().addFreshEntity(var.get());
-            player.startRiding(var.get(), true);
+            Entity entity = EntityType.create(mountTag, player.level()).get();
+            entity.setPos(blockPos.getX(), blockPos.getY() + 1, blockPos.getZ());
+            entity.setYRot(player.getYRot());
+            entity.setXRot(player.getXRot());
+            player.level().addFreshEntity(entity);
+            player.startRiding(entity, true);
             player.getCooldowns().addCooldown(baubleMount.getItem(),BMConfig.cooldownValue.get() * 20);
 
-            player.level().playSound(var.get(), var.get().getOnPos(), MountSound.MOUNT_SUMMON.get(), SoundSource.NEUTRAL, 1f, 1f);
-         }
+            player.level().playSound(entity, entity.getOnPos(), MountSound.MOUNT_SUMMON.get(), SoundSource.NEUTRAL, 1f, 1f);
+        }
     }
 }

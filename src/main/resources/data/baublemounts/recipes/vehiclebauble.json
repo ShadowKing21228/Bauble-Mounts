@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RTR",
+    "RBR",
+    "RMR"
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "B": {
+      "tag": "forge:ingots/iron"
+    },
+    "T": {
+      "tag": "forge:gems"
+    },
+    "M": {
+      "item": "minecraft:minecart"
+    }
+  },
+  "result": {
+    "item": "baublemounts:vehicle_bauble"
+  }
+}

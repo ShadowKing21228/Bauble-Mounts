@@ -1,16 +1,20 @@
 package net.shadowking21.baublemounts;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.logging.LogUtils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.entity.vehicle.Minecart;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -37,28 +41,32 @@ import net.shadowking21.baublemounts.client.TooltipHandler;
 import net.shadowking21.baublemounts.events.Events;
 import net.shadowking21.baublemounts.items.MountBauble;
 import net.shadowking21.baublemounts.items.MountBaubleBroken;
+import net.shadowking21.baublemounts.items.VehicleBauble;
+import net.shadowking21.baublemounts.items.VehicleBaubleBroken;
 import net.shadowking21.baublemounts.network.ModNetwork;
 import net.shadowking21.baublemounts.network.SendSpawnEntityC2S;
 import net.shadowking21.baublemounts.sounds.MountSound;
 import org.joml.Vector2ic;
 import org.lwjgl.glfw.GLFW;
+import org.slf4j.Logger;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static net.shadowking21.baublemounts.BaubleMounts.ClientModEvents.tooltipRender;
-
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(BaubleMounts.MODID)
 public class BaubleMounts {
 
     public static final String MODID = "baublemounts";
+
     public BaubleMounts() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         MountBauble.register(modEventBus);
         MountBaubleBroken.register(modEventBus);
+        VehicleBauble.register(modEventBus);
+        VehicleBaubleBroken.register(modEventBus);
         modEventBus.addListener(this::commonSetup);
         MinecraftForge.EVENT_BUS.register(this);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, BMConfig.SPEC);
@@ -66,32 +74,38 @@ public class BaubleMounts {
         MinecraftForge.EVENT_BUS.register(new Events());
         ModNetwork.init();
         MountSound.register(modEventBus);
-        if (FMLEnvironment.dist.isClient())
-        {
-            modEventBus.addListener(this::onRegisterTooltip);
+        if (FMLEnvironment.dist.isClient()) {
             new ClientModEvents().init();
         }
     }
-    private void addCreative (BuildCreativeModeTabContentsEvent event ) {
-        if(event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+
+    public static Logger LOGGER = LogUtils.getLogger();
+
+    private void addCreative(BuildCreativeModeTabContentsEvent event) {
+        if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             event.accept(MountBauble.BAUBLECOMMON);
             event.accept(MountBaubleBroken.BAUBLEBROKEN);
+            event.accept(VehicleBaubleBroken.BAUBLEVEHICLEBROKEN);
+            event.accept(VehicleBauble.BAUBLEVEHICLE);
         }
     }
+
     private void commonSetup(final FMLCommonSetupEvent event) {
     }
+
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents {
         @OnlyIn(Dist.CLIENT)
-        public static TooltipHandler.TooltipRender tooltipRender = new TooltipHandler.TooltipRender(null);
+        //public static TooltipHandler.TooltipRender tooltipRender = new TooltipHandler.TooltipRender(null);
         public void init() {
             IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
             MinecraftForge.EVENT_BUS.addListener(this::keyMountSummon);
         }
+
         public static final KeyMapping MOUNT_SUMMON_KEY = new KeyMapping(
                 "key.baublemounts.mountsummon",
                 InputConstants.Type.KEYSYM,
-                GLFW.GLFW_KEY_G,
+                GLFW.GLFW_KEY_R,
                 "key.categories.baublemounts"
         );
 
@@ -102,46 +116,36 @@ public class BaubleMounts {
         }
 
         @OnlyIn(Dist.CLIENT)
-        public void keyMountSummon(InputEvent.Key event)
-        {
-            if (MOUNT_SUMMON_KEY.consumeClick())
-            {
+        public void keyMountSummon(InputEvent.Key event) {
+            if (MOUNT_SUMMON_KEY.consumeClick()) {
                 new SendSpawnEntityC2S().sendToServer();
             }
         }
     }
-    @SubscribeEvent
-    public void onServerStarting(ServerStartingEvent event) {
 
-    }
-    @OnlyIn(Dist.CLIENT)
-    public void onRegisterTooltip (RegisterClientTooltipComponentFactoriesEvent event)
-    {
-        TooltipHandler.register(event);
-    }
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
-    public void onRenderTooltip (RenderTooltipEvent.Pre event)
-    {
+    public void onRenderTooltip(RenderTooltipEvent.Pre event) {
+        ResourceLocation location;
         ItemStack itemStack = event.getItemStack();
-        if (itemStack.getItem() == MountBauble.BAUBLECOMMON.get() || itemStack.getItem() == MountBaubleBroken.BAUBLEBROKEN.get())
-        {
+        if (itemStack.getItem() == MountBauble.BAUBLECOMMON.get() || itemStack.getItem() == MountBaubleBroken.BAUBLEBROKEN.get() || itemStack.getItem() == VehicleBauble.BAUBLEVEHICLE.get() || itemStack.getItem() == VehicleBaubleBroken.BAUBLEVEHICLEBROKEN.get()) {
             Entity entity = null;
-            if (itemStack.hasTag() && itemStack.getTag().contains("Mount") && !itemStack.getTag().getCompound("Mount").isEmpty())
-            {
+            if (itemStack.hasTag() && itemStack.getTag().contains("Mount") && !itemStack.getTag().getCompound("Mount").isEmpty()) {
                 CompoundTag compoundTag = itemStack.getTag().getCompound("Mount");
                 Optional<Entity> d1 = EntityType.create(compoundTag, Minecraft.getInstance().player.level());
-                if(d1.isPresent()) {
+                if (d1.isPresent()) {
                     entity = d1.get();
                     if (ForgeRegistries.ENTITY_TYPES.getKey(entity.getType()).getNamespace().equals("iceandfire") || ForgeRegistries.ENTITY_TYPES.getKey(entity.getType()).getNamespace().equals("dragonmounts"))
                         entity = null;
                 }
             }
-
+            if (itemStack.getItem() == MountBauble.BAUBLECOMMON.get() || itemStack.getItem() == MountBaubleBroken.BAUBLEBROKEN.get()) location = new ResourceLocation("baublemounts:textures/tooltip/button.png");
+            else location = new ResourceLocation("baublemounts:textures/tooltip/button_key.png");
             TooltipHandler.BaubleMountsTooltipComponent tooltipComponent = new TooltipHandler.BaubleMountsTooltipComponent(itemStack, entity);
             GuiGraphics guiGraphics = event.getGraphics();
 
             Vector2ic vector2ic = DefaultTooltipPositioner.INSTANCE.positionTooltip(guiGraphics.guiWidth(), guiGraphics.guiHeight(), event.getX(), event.getY(), 0, 10);
+            TooltipHandler.TooltipRender tooltipRender = new TooltipHandler.TooltipRender(null, location);
             tooltipRender.component = tooltipComponent;
             tooltipRender.renderImage(event.getFont(), vector2ic.x(), vector2ic.y(), guiGraphics);
             event.setCanceled(true);
