@@ -1,6 +1,7 @@
 {
   "item.baublemounts.mount_bauble" : "Mount Bauble",
   "item.baublemounts.mount_bauble_broken" : "Broken Mount Bauble",
+  "item.baublemounts.vehicle_bauble": "Vehicle Key",
   "accessories.slot.mountbauble": "Mount Bauble",
   "key.baublemounts.mountsummon": "Mount Summon",
   "key.categories.baublemounts": "Bauble Mounts",
@@ -9,6 +10,8 @@
   "tooltip.baublemounts.desc" : "§oPress Shift for more information",
   "tooltip.baublemounts.shiftdesc" : "With this item, you can store mounts by pressing RMB on them. You can then release the mount by pressing RMB again on the unit, or put it in the §eMount Bauble§r slot. To release or take a mount from a slot, press %s",
   "tooltip.baublemounts.shiftdescbroken" : "This bauble is broken because the mount inside it died while outside. Repair it by crafting it so that the mount can be summoned again.",
+  "tooltip.baublemounts.vehicleshiftdesc" : "With this item, you can store vehicles by pressing RMB on them. You can then release the vehicle by pressing RMB again on the unit, or put it in the §eMount Bauble§r slot. To release or take a vehicle from a slot, press %s",
+  "tooltip.baublemounts.vehicleshiftdescbroken" : "This bauble is broken because the vehicle inside it died while outside. Repair it by crafting it so that the vehicle can be summoned again.",
   "sounds.baublemounts.mount_summon": "Mount Summon",
   "sounds.baublemounts.mount_unsummon": "Mount Disappear",
   "baublemounts.configuration.section.baublemounts.common.toml": "Bauble Mounts Config",

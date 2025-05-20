@@ -18,6 +18,7 @@ import net.shadowking21.baublemounts.BMConfig;
 import net.shadowking21.baublemounts.components.MountComponents;
 import net.shadowking21.baublemounts.components.MountRecord;
 import net.shadowking21.baublemounts.items.MountBauble;
+import net.shadowking21.baublemounts.items.MountBaubleBroken;
 import net.shadowking21.baublemounts.utils.Utils;
 
 import java.util.Optional;
@@ -39,10 +40,10 @@ public class Events {
         for (ServerPlayer player : entity.getServer().getPlayerList().getPlayers()) {
             if (Utils.isMountBaubleEqualOnPlayer(player, entity))
             {
-                ItemStack brokenMountBauble = new ItemStack(MountBauble.BAUBLEBROKEN.get());
+                ItemStack brokenMountBauble = new ItemStack(MountBaubleBroken.BAUBLEBROKEN.get());
                 ItemStack mountBauble = Utils.getMountBauble(player);
                 CompoundTag compoundTag = new CompoundTag();
-                compoundTag.merge(mountBauble.get(MountComponents.MOUNT_COMPONENTS.get()).compoundTag());
+                compoundTag.merge(mountBauble.get(MountComponents.MOUNT_COMPONENTS).compoundTag());
                 String uuid = mountBauble.get(MountComponents.MOUNT_COMPONENTS).uuid();
                 brokenMountBauble.set(MountComponents.MOUNT_COMPONENTS, new MountRecord(compoundTag, uuid));
                 if (!BMConfig.CONFIG.brokenBaubleAppearance.get())
@@ -59,7 +60,7 @@ public class Events {
         for (int i = 0; i < event.getInventory().getContainerSize(); i++) {
             ItemStack ingredient = event.getInventory().getItem(i);
 
-            if (ingredient.getItem() == MountBauble.BAUBLEBROKEN.get()) {
+            if (ingredient.getItem() == MountBaubleBroken.BAUBLEBROKEN.get()) {
                 CompoundTag resultTag = new CompoundTag();
                 resultTag.merge(ingredient.get(MountComponents.MOUNT_COMPONENTS).compoundTag());
                 String uuid = ingredient.get(MountComponents.MOUNT_COMPONENTS).uuid();

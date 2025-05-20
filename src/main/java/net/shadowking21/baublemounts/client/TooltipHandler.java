@@ -4,30 +4,62 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.ClientHooks;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
-import net.sixik.sdmuilibrary.client.utils.GLHelper;
+import net.neoforged.neoforge.client.event.RenderTooltipEvent;
+import net.shadowking21.baublemounts.BaubleMounts;
+import net.shadowking21.baublemounts.components.MountComponents;
+import net.shadowking21.baublemounts.items.MountBauble;
+import net.shadowking21.baublemounts.utils.Utils;
 import net.sixik.sdmuilibrary.client.utils.RenderHelper;
 import net.sixik.sdmuilibrary.client.utils.math.Vector2;
 import net.sixik.sdmuilibrary.client.utils.math.Vector2d;
 import net.sixik.sdmuilibrary.client.utils.misc.CenterOperators;
+import net.sixik.sdmuilibrary.client.utils.renders.GLRenderHelper;
 import net.sixik.sdmuilibrary.client.utils.renders.TextureRenderHelper;
+import org.joml.Vector2ic;
 
 import java.util.List;
+import java.util.Optional;
 
+@EventBusSubscriber(modid = BaubleMounts.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class TooltipHandler {
+    @SubscribeEvent
     public static void register(RegisterClientTooltipComponentFactoriesEvent event)
     {
         event.register(BaubleMountsTooltipComponent.class, TooltipRender::new);
     }
+    private static TooltipHandler.TooltipRender tooltipRender = null;
+
+    public static TooltipHandler.TooltipRender getTooltipRender() {
+        if (tooltipRender == null) {
+            tooltipRender = new TooltipHandler.TooltipRender(null);
+        }
+        return tooltipRender;
+    }
+
+    @SubscribeEvent
+    public static void onRegisterTooltip(RegisterClientTooltipComponentFactoriesEvent event) {
+        TooltipHandler.register(event);
+    }
+    @OnlyIn(Dist.CLIENT)
     public static class TooltipRender implements ClientTooltipComponent
     {
         public BaubleMountsTooltipComponent component;
@@ -76,7 +108,7 @@ public class TooltipHandler {
                 tooltipSize.setX(vector2.x);
             else
                 tooltipSize.setX(vector2.x+16);
-            Vector2 entityPos = GLHelper.getCenterWithPos(new Vector2(x, 0), tooltipSize, CenterOperators.Type.CENTER_X, CenterOperators.Method.ABSOLUTE);
+            Vector2 entityPos = Utils.getCenterWithPos(new Vector2(x, 0), tooltipSize, CenterOperators.Type.CENTER_X, CenterOperators.Method.ABSOLUTE);
             guiGraphics.pose().pushPose();
             guiGraphics.pose().translate(0, 0, 900);
             TextureRenderHelper.renderSlicedTexture(guiGraphics, ResourceLocation.parse("baublemounts:textures/tooltip/button.png"), x, y, tooltipSize.x, tooltipSize.y, 10, 64, 64);

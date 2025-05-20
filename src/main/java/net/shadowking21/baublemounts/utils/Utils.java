@@ -17,87 +17,65 @@ import net.shadowking21.baublemounts.BMConfig;
 import net.shadowking21.baublemounts.components.MountComponents;
 import net.shadowking21.baublemounts.components.MountRecord;
 import net.shadowking21.baublemounts.items.MountBauble;
+import net.shadowking21.baublemounts.items.MountBaubleBroken;
+import net.shadowking21.baublemounts.items.VehicleBauble;
+import net.sixik.sdmuilibrary.client.utils.math.Vector2;
+import net.sixik.sdmuilibrary.client.utils.misc.CenterOperators;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 public class Utils {
-    //public static CompoundTag getMountCompoundTag (ItemStack itemStack)
-    //{
-    //    if (!itemStack.is(MountBauble.BAUBLECOMMON) || !itemStack.is(MountBauble.BAUBLEBROKEN)) return new CompoundTag();
-    //    CompoundTag compoundTag = new CompoundTag();
-    //    boolean has = itemStack.getComponents().has(MountComponents.MOUNT_COMPONENTS.get());
-    //    if (has && itemStack.getComponents().get(MountComponents.MOUNT_COMPONENTS.get()) != null);
-    //    {
-    //        try {
-    //            compoundTag = itemStack.get(MountComponents.MOUNT_COMPONENTS.get()).compoundTag();
-    //        }catch (Exception E){
-    //            E.printStackTrace();
-    //        }
-    //    }
-    //    return compoundTag;
-    //}
-    //public static void writeCompound (ItemStack itemStack, CompoundTag compoundTag)
-    //{
-    //    MountRecord record = new MountRecord(compoundTag, "");
-    //    itemStack.getComponents().get(MountComponents.MOUNT_COMPONENTS.get());
-    //    itemStack.set(MountComponents.MOUNT_COMPONENTS, record);
-    //}
-    //public static void whileMountBaubleEquipped(Player player)
-    //{
-    //    while (player.isPassenger())
-    //    {
-    //        ItemStack itemStack = Utils.getMountBauble((player));
-    //        if (itemStack == ItemStack.EMPTY)
-    //        {
-    //            player.getVehicle().discard();
-    //        }
-    //    }
-    //}
+    public static List<Item> mountBaubles = List.of(MountBauble.BAUBLECOMMON.get()/*, VehicleBauble.BAUBLEVEHICLE.get()*/);
+    public static Vector2 getCenterWithPos(Vector2 pos, Vector2 size, CenterOperators.Type centerType, CenterOperators.Method method) {
+        switch (centerType) {
+            case CENTER_X -> {
+                return new Vector2(pos.x + (method.isAbsolute() ? size.x / 3 : size.x / 2), pos.y);
+            }
+            case CENTER_Y -> {
+                return new Vector2(pos.x, pos.y + (method.isAbsolute() ? size.y / 3 : size.y / 2));
+            }
+            case CENTER_XY -> {
+                return new Vector2(pos.x + (method.isAbsolute() ? size.x / 3 : size.x / 2), pos.y + (method.isAbsolute() ? size.y / 3 : size.y / 2));
+            }
+            default -> {
+                return new Vector2(pos.x, pos.y);
+            }
+        }
+    }
+    public static boolean isMountBauble(ItemStack itemStack) {
+        for (Item item : mountBaubles)
+            if (itemStack.getItem().equals(item)) return true;
+        return false;
+    }
     public static boolean hasMountComponents(ItemStack itemStack)
     {
         if (itemStack == ItemStack.EMPTY)
             return false;
-        if (itemStack.getItem() == MountBauble.BAUBLECOMMON.get() || itemStack.getItem() == MountBauble.BAUBLEBROKEN.get()) {
-            MountRecord mountRecord = new MountRecord(itemStack.get(MountComponents.MOUNT_COMPONENTS).compoundTag(), itemStack.get(MountComponents.MOUNT_COMPONENTS).uuid());
-            return !MountRecord.DEFAULT.equals(mountRecord);
+        if (isMountBauble(itemStack)) {
+            return !MountRecord.DEFAULT.equals(new MountRecord(itemStack.get(MountComponents.MOUNT_COMPONENTS).compoundTag(), itemStack.get(MountComponents.MOUNT_COMPONENTS).uuid()));
         }
         return false;
     }
     public static ItemStack getMountBauble(Player player) {
         ItemStack stackInSlot = ItemStack.EMPTY;
         for (ItemStack itemStack : AccessoriesCapability.get(player).getContainer(new SlotTypeReference("mountbauble")).getAccessories().getItems()) {
-            if (itemStack.is(MountBauble.BAUBLECOMMON.get())) {
+            if (itemStack.is(MountBauble.BAUBLECOMMON.get()) /*|| itemStack.is(VehicleBauble.BAUBLEVEHICLE.get())*/) {
                 stackInSlot = itemStack;
                 break;
             }
         }
         return stackInSlot;
     }
-    //public static boolean isMountBaubleEquippedOnPlayer(Player player)
-    //{
-    //    Optional<ICuriosItemHandler> abc = CuriosApi.getCuriosInventory(player);
-    //    AtomicReference<Boolean> stackInSlot = new AtomicReference<>(false);
-    //    abc.ifPresent(s ->{
-    //        for (int i = 0; i < s.getEquippedCurios().getSlots(); i++)
-    //        {
-    //            if (MountBauble.BAUBLECOMMON.get() == s.getEquippedCurios().getStackInSlot(i).getItem())
-    //            {
-    //                stackInSlot.set(true);
-    //                break;
-    //            }
-    //        }
-    //    });
-    //    return stackInSlot.get();
-    //}
     public static boolean isMountBaubleEqualOnPlayer(Player player, Entity entity)
     {
-        Boolean bool = false;
+        boolean bool = false;
             for (ItemStack itemStack : AccessoriesCapability.get(player).getContainer(new SlotTypeReference("mountbauble")).getAccessories().getItems())
             {
-                if (MountBauble.BAUBLECOMMON.get() == itemStack.getItem() && Utils.hasMountComponents(itemStack))
+                if ((MountBauble.BAUBLECOMMON.get() == itemStack.getItem() /*|| itemStack.is(VehicleBauble.BAUBLEVEHICLE.get())*/) && Utils.hasMountComponents(itemStack))
                 {
-                    if (entity.getUUID().equals((UUID.fromString(itemStack.get(MountComponents.MOUNT_COMPONENTS.get()).uuid()))))
+                    if (entity.getUUID().equals((UUID.fromString(itemStack.get(MountComponents.MOUNT_COMPONENTS).uuid()))))
                     {
                         bool = true;
                         break;
@@ -123,7 +101,7 @@ public class Utils {
         boolean bool = false;
         if (hasMountComponents(mountBauble)) { // Это Маунт Бабл, но есть ли в нём компоненты?
             player.stopRiding();
-            CompoundTag mountTag = mountBauble.get(MountComponents.MOUNT_COMPONENTS.get()).compoundTag();
+            CompoundTag mountTag = mountBauble.get(MountComponents.MOUNT_COMPONENTS).compoundTag();
             if (!mountTag.isEmpty()) { // Компоненты есть, на CompoundTag там не нулевой?
                 ItemStack itemStack = mountBauble.copy();
                 var var = EntityType.create(mountTag, player.level());

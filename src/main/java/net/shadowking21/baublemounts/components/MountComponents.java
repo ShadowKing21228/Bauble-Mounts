@@ -1,7 +1,6 @@
 package net.shadowking21.baublemounts.components;
 
 import com.mojang.serialization.Codec;
-import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;

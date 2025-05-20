@@ -121,9 +121,9 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
     implementation "curse.maven:accessories-938917:5727153"
-    implementation "curse.maven:sdm-ui-lib-1095061:5724677"
-    implementation "curse.maven:cloth-config-348521:5729127"
     implementation "curse.maven:architectury-api-419699:5786327"
+    implementation "curse.maven:sdm-ui-lib-1095061:6307149"
+    implementation "curse.maven:cloth-config-348521:5729127"
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
