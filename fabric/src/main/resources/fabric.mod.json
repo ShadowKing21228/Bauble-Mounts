@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "id": "baublemounts",
+  "version": "${version}",
+  "name": "Bauble Mounts",
+  "description": "A mod that allows you to “carry” your mounts always with you!",
+  "authors": [
+    "ShadowKing21"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/bauble-mounts"
+  },
+  "license": "All-Rights-Reserved",
+  "icon": "assets/baublemounts/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.shadowking21.baublemounts.fabric.BaublemountsFabric"
+    ],
+    "client": [
+      "net.shadowking21.baublemounts.fabric.client.BaublemountsFabricClient"
+    ]
+  },
+  "mixins": [
+    "baublemounts.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.17.2",
+    "minecraft": "~1.20.1",
+    "java": ">=17",
+    "architectury": ">=9.2.14",
+    "fabric-api": "*",
+    "trinkets": ">=3.7",
+    "shadowconfig": ">=1.0.4"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}

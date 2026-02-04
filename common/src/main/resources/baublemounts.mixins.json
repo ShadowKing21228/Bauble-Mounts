@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "net.shadowking21.baublemounts.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "client": [
+  ],
+  "mixins": [
+    "StartRidingMixin",
+    "StopRidingMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,0 +1,52 @@
+modLoader = "javafml"
+loaderVersion = "[47,)"
+issueTrackerURL = "https://github.com/ShadowKing21228/Bauble-Mounts/issues"
+license = "All Rights Reserved"
+
+[[mods]]
+modId = "baublemounts"
+version = "${version}"
+displayName = "Bauble Mounts"
+authors = "ShadowKing21"
+description = '''
+    A mod that allows you to “carry” your mounts always with you!
+'''
+#logoFile = ""
+
+[[dependencies.baublemounts]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.baublemounts]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.1,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.baublemounts]]
+modId = "architectury"
+mandatory = true
+versionRange = "[9.2.14,)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.baublemounts]]
+modId = "curios"
+mandatory = true
+versionRange = "[5,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.baublemounts]]
+modId = "shadowconfig"
+mandatory = true
+versionRange = "[1.0.4,)"
+ordering = "NONE"
+side = "BOTH"
+
+
+

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "III",
+    "ICI",
+    "IGI"
+  ],
+  "key": {
+    "I": {
+      "item" : "minecraft:gold_nugget"
+    },
+    "G": {
+      "item": "minecraft:echo_shard"
+    },
+    "C": {
+      "item": "baublemounts:mount_bauble_broken"
+    }
+  },
+  "result": {
+    "item": "baublemounts:mount_bauble"
+  }
+}

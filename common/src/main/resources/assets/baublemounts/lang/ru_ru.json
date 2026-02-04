@@ -1,0 +1,19 @@
+{
+  "item.baublemounts.mount_bauble" : "Ездовая безделушка",
+  "item.baublemounts.mount_bauble_broken" : "Сломанная ездовая безделушка",
+  "item.baublemounts.vehicle_bauble": "Транспортный ключ",
+  "item.baublemounts.vehicle_bauble_broken": "Сломанный транспортный ключ",
+  "curios.identifier.mountbauble": "Ездовая безделушка",
+  "key.baublemounts.mountsummon": "Призыв ездового животного",
+  "key.categories.baublemounts": "Езделушка",
+  "tooltip.baublemounts.getname" : "Имя ездового животного: %s",
+  "tooltip.baublemounts.gethealth" : "Здоровье ездового животного: %s",
+  "tooltip.baublemounts.desc" : "§oЗажмите Shift для дополнительной информации",
+  "tooltip.baublemounts.shiftdesc" : "С помощью этого предмета можно хранить ездовых питомцев, нажав по ним ПКМ. После этого можно высвободить ездового животного, нажав ПКМ повторно по блоку, или положить его в слот §eЕздовой безделушки§r. Чтобы высвободить или забрать ездового питомца из слота, нажмите %s",
+  "tooltip.baublemounts.shiftdescbroken" : "Эта безделушка сломана, поскольку ездовой питомец находящийся в ней умер, пока находился снаружи. §eВосстановите§r её крафтом, чтобы ездового животного снова можно было вызвать.",
+  "tooltip.baublemounts.vehicleshiftdesc": "С помощью этого предмета можно хранить транспорт, нажав по ним ПКМ. После этого можно высвободить транспорт, нажав ПКМ повторно по блоку, или положить его в слот §eЕздовой безделушки§r. Чтобы высвободить или забрать транспорт из слота, нажмите %s",
+  "tooltip.baublemounts.vehicleshiftdescbroken": "Эта безделушка сломана, поскольку транспорт находящийся в ней был разрушен, пока находился снаружи. §eВосстановите§r её крафтом, чтобы её снова можно было использовать",
+  "sounds.baublemounts.mount_summon": "Призыв ездового животного",
+  "sounds.baublemounts.mount_unsummon": "Исчезновение ездового животного",
+  "trinkets.slot.legs.mountbauble": "Ездовая безделушка"
+}

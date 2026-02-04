@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "baublemounts:mount_bauble",
+    "baublemounts:mount_bauble_broken",
+    "baublemounts:vehicle_bauble"
+  ]
+}
