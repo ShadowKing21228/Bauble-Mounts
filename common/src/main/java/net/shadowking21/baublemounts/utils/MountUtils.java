@@ -38,7 +38,10 @@ public class MountUtils {
         if (!itemstack.hasTag())
             return false;
 
-        return itemstack.getTag().getUUID("ID") != null;
+        CompoundTag tag = itemstack.getTag();
+        return tag != null
+                && tag.contains(UUID_TAG, Tag.TAG_INT_ARRAY)
+                && tag.contains(MOUNT_TAG, Tag.TAG_COMPOUND);
     }
 
     public static boolean isMountBaubleEqualOnPlayer(Player player, Entity entity) {

@@ -37,6 +37,15 @@ subprojects {
         maven {
             url "https://maven.shedaniel.me/"
         }
+        maven {
+            name = "AzureDoom Mods"
+            url = "https://maven.azuredoom.com/mods"
+        }
+        maven {
+            name = "SpongePowered"
+            url = "https://repo.spongepowered.org/repository/maven-public/"
+        }
+
     }
 
     dependencies {

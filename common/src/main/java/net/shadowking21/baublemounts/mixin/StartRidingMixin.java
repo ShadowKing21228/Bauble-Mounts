@@ -3,6 +3,7 @@ package net.shadowking21.baublemounts.mixin;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionHand;
 import net.shadowking21.baublemounts.registry.ItemRegistry;
 import net.shadowking21.baublemounts.utils.MountUtils;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,7 +29,7 @@ public class StartRidingMixin {
                 && !MountUtils.hasMountTag(player.getMainHandItem())
                 && !MountUtils.isMountBaubleEqualOnPlayer(player, entity)) {
 
-            MountUtils.recordMountData(entity, player, player.getMainHandItem(), player.getUsedItemHand());
+            MountUtils.recordMountData(entity, player, player.getMainHandItem(), InteractionHand.MAIN_HAND);
             cir.setReturnValue(true);
         }
     }
